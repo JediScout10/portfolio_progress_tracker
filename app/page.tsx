@@ -4,19 +4,18 @@ import { supabase } from '@/lib/supabaseClient'
 import { useRouter } from 'next/navigation'
 
 export default function HomePage() {
-  const router = useRouter()
+ const router = useRouter()
 
-  const openDashboard = async () => {
-    const {
-      data: { user },
-    } = await supabase.auth.getUser()
+const openDashboard = async () => {
+  const { data: { user } } = await supabase.auth.getUser()
 
-    if (!user) {
-      router.push('/login')
-    } else {
-      router.push('/dashboard')
-    }
+  if (user) {
+    router.push('/dashboard')
+  } else {
+    router.push('/login')
   }
+}
+
 
   return (
     <main className="min-h-screen bg-neutral-50 text-neutral-900 dark:bg-neutral-950 dark:text-neutral-100">
