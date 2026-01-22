@@ -116,7 +116,13 @@ export default function DashboardPage() {
 
   const [loading, setLoading] = useState(true)
   const [entryId, setEntryId] = useState<string | null>(null)
+  const [userId, setUserId] = useState<string | null>(null)
+
   const [tasks, setTasks] = useState<Task[]>([])
+  const [workouts, setWorkouts] = useState<
+  { id: string; exercise: string; completed: boolean }[]
+>([])
+
   const [reflection, setReflection] = useState('')
   const [completed, setCompleted] = useState(false)
   const [streak, setStreak] = useState(0)
@@ -136,7 +142,9 @@ export default function DashboardPage() {
         return
       }
 
-      const userId = user.id
+     const userId = user.id
+setUserId(userId)
+
 
       /* ---- TODAY ENTRY ---- */
 
@@ -166,6 +174,18 @@ export default function DashboardPage() {
         .eq('daily_entry_id', entry.id)
 
       setTasks(taskData || [])
+
+       /* ---- WORKOUTS ---- */
+
+      const { data: workoutData } = await supabase
+  .from('workout_entries')
+  .select('*')
+  .eq('user_id', userId)
+.eq('date', todayISO)
+
+
+setWorkouts(workoutData || [])
+
 
       /* ---- STREAK ---- */
 
@@ -239,6 +259,53 @@ export default function DashboardPage() {
     setTasks(tasks.filter(t => t.id !== id))
   }
 
+  const addWorkout = async () => {
+  if (!userId) return
+
+  const { data } = await supabase
+    .from('workout_entries')
+    .insert({
+      user_id: userId,
+      date: todayISO,
+      exercise: '',
+      completed: false,
+    })
+    .select()
+    .single()
+
+  if (data) setWorkouts([...workouts, data])
+}
+
+
+
+const updateWorkout = async (
+  id: string,
+  updates: { exercise?: string; completed?: boolean }
+) => {
+  await supabase
+    .from('workout_entries')
+    .update(updates)
+    .eq('id', id)
+
+  setWorkouts(
+    workouts.map(w =>
+      w.id === id ? { ...w, ...updates } : w
+    )
+  )
+}
+
+const deleteWorkout = async (id: string) => {
+  await supabase
+    .from('workout_entries')
+    .delete()
+    .eq('id', id)
+
+  setWorkouts(workouts.filter(w => w.id !== id))
+}
+
+
+
+
   const finishDay = async () => {
     await supabase
       .from('daily_entries')
@@ -256,7 +323,7 @@ export default function DashboardPage() {
 
   /* ================== RENDER ================== */
 
-  return (
+   return (
     <main className="min-h-screen bg-neutral-950 text-neutral-100">
       <div className="mx-auto max-w-xl px-6 py-16 space-y-12">
 
@@ -269,36 +336,66 @@ export default function DashboardPage() {
           </p>
         </section>
 
+        {/* TASKS */}
         <section>
           <p className="text-xs uppercase text-neutral-500">Today’s Focus</p>
-
           <div className="space-y-3">
-            {tasks.map(task => (
-              <div key={task.id} className="flex gap-3 bg-neutral-900 px-3 py-2 rounded">
+            {tasks.map(t => (
+              <div key={t.id} className="flex gap-3 bg-neutral-900 px-3 py-2 rounded">
                 <input
                   type="checkbox"
-                  checked={task.completed}
+                  checked={t.completed}
                   onChange={e =>
-                    updateTask(task.id, { completed: e.target.checked })
+                    updateTask(t.id, { completed: e.target.checked })
                   }
                 />
                 <input
                   className="w-full bg-transparent outline-none"
-                  value={task.text}
+                  value={t.text}
                   onChange={e =>
-                    updateTask(task.id, { text: e.target.value })
+                    updateTask(t.id, { text: e.target.value })
                   }
                 />
-                <button onClick={() => deleteTask(task.id)}>✕</button>
+                <button onClick={() => deleteTask(t.id)}>✕</button>
               </div>
             ))}
           </div>
-
           <button onClick={addTask} className="text-sm text-neutral-400 mt-2">
             + Add task
           </button>
         </section>
 
+        {/* WORKOUTS */}
+        <section>
+          <p className="text-xs uppercase text-neutral-500">Workout</p>
+          <div className="space-y-3">
+            {workouts.map(w => (
+              <div key={w.id} className="flex gap-3 bg-neutral-900 px-3 py-2 rounded">
+                <input
+                  type="checkbox"
+                  checked={w.completed}
+                  onChange={e =>
+                    updateWorkout(w.id, { completed: e.target.checked })
+                  }
+                />
+                <input
+                  className="w-full bg-transparent outline-none"
+                  placeholder="Pushups, Situps..."
+                  value={w.exercise}
+                  onChange={e =>
+                    updateWorkout(w.id, { exercise: e.target.value })
+                  }
+                />
+                <button onClick={() => deleteWorkout(w.id)}>✕</button>
+              </div>
+            ))}
+          </div>
+          <button onClick={addWorkout} className="text-sm text-neutral-400 mt-2">
+            + Add workout
+          </button>
+        </section>
+
+        {/* REFLECTION */}
         <section>
           <p className="text-xs uppercase text-neutral-500">Reflection</p>
           <textarea
@@ -309,91 +406,86 @@ export default function DashboardPage() {
           />
         </section>
 
-        {/* ================== HEATMAP ================== */}
-
-        <section>
-          <div className="flex items-center justify-between mb-3">
-            <p className="text-xs uppercase text-neutral-500">
-              Consistency ({year})
-            </p>
-
-            <select
-  value={year}
-  onChange={e => setYear(Number(e.target.value))}
-  className="bg-neutral-900 text-sm px-2 py-1 rounded"
->
-  {Array.from({ length: END_YEAR - START_YEAR + 1 }, (_, i) => {
-    const y = END_YEAR - i
-    return (
-      <option key={y} value={y}>
-        {y}
-      </option>
-    )
-  })}
-</select>
-
-          </div>
-
-          <div className="flex">
-           <div className="flex flex-col mr-3 text-xs text-neutral-500">
-  {/* spacer for month labels row */}
-  <div className="h-4 mb-2" />
-
-  {dayNames.map((d, i) => (
-    <div
-      key={d}
-      className={`h-4 ${i !== dayNames.length - 1 ? 'mb-2' : ''}`}
+        {/* HEATMAP */}
+      <section>
+  <div className="flex justify-between mb-2">
+    <p className="text-xs uppercase text-neutral-500">
+      Consistency ({year})
+    </p>
+    <select
+      value={year}
+      onChange={e => setYear(Number(e.target.value))}
+      className="bg-neutral-900 text-sm px-2 py-1 rounded"
     >
-      {d[0]}
+      {Array.from({ length: END_YEAR - START_YEAR + 1 }, (_, i) => {
+        const y = END_YEAR - i
+        return <option key={y} value={y}>{y}</option>
+      })}
+    </select>
+  </div>
+
+  <div className="flex">
+    {/* DAY LABELS */}
+    <div className="flex flex-col mr-3 text-xs text-neutral-500">
+      {/* spacer for month labels */}
+      <div className="h-4 mb-2" />
+
+      {dayNames.map((d, i) => (
+        <div
+          key={d}
+          className={`h-4 ${i !== dayNames.length - 1 ? 'mb-2' : ''}`}
+        >
+          {d[0]}
+        </div>
+      ))}
     </div>
-  ))}
-</div>
 
+    {/* HEATMAP SCROLL */}
+    <div className="overflow-x-auto">
+      <div className="inline-block">
 
-            <div className="overflow-x-auto">
-              <div className="inline-block">
+        {/* MONTH LABELS */}
+        <div className="flex mb-2 text-xs text-neutral-500">
+          {weeks.map((week, i) => {
+            const first = week.find(c => c?.date)
+            const prev = weeks[i - 1]?.find(c => c?.date)
+            const show =
+              first && (!prev || first.month !== prev.month)
 
-                <div className="flex mb-2 text-xs text-neutral-500">
-                  {weeks.map((week, i) => {
-                    const first = week.find(c => c?.date)
-                    const prev = weeks[i - 1]?.find(c => c?.date)
-                    const show =
-                      first && (!prev || first.month !== prev.month)
-
-                    return (
-                      <div key={i} className="w-4 mr-2">
-                        {show ? monthNames[first!.month!] : ''}
-                      </div>
-                    )
-                  })}
-                </div>
-
-                <div className="flex">
-                  {weeks.map((week, wi) => (
-                    <div key={wi} className="flex flex-col mr-2">
-                      {week.map((cell, di) => (
-                        <div
-                          key={di}
-                          title={cell?.date ? `${cell.date}: ${cell.count}` : ''}
-                          className={`h-4 w-4 mb-2 rounded ${
-                            cell?.date
-                              ? getHeatColor(cell.count)
-                              : 'bg-neutral-900'
-                          }`}
-                        />
-                      ))}
-                    </div>
-                  ))}
-                </div>
-
+            return (
+              <div key={i} className="w-4 mr-2">
+                {show ? monthNames[first!.month!] : ''}
               </div>
-            </div>
-          </div>
+            )
+          })}
+        </div>
 
-          <p className="mt-2 text-xs text-neutral-500">
-            Darker = more tasks completed
-          </p>
-        </section>
+        {/* CELLS */}
+        <div className="flex">
+          {weeks.map((week, wi) => (
+            <div key={wi} className="flex flex-col mr-2">
+              {week.map((cell, di) => (
+                <div
+                  key={di}
+                  title={cell?.date ?? ''}
+                  className={`h-4 w-4 ${
+                    di !== week.length - 1 ? 'mb-2' : ''
+                  } rounded ${
+                    cell?.date
+                      ? getHeatColor(cell.count)
+                      : 'bg-neutral-900'
+                  }`}
+                />
+              ))}
+            </div>
+          ))}
+        </div>
+
+      </div>
+    </div>
+  </div>
+</section>
+
 
         <p className="text-sm text-neutral-400">
           Current streak: {streak} days
@@ -407,6 +499,7 @@ export default function DashboardPage() {
             Finish Today
           </button>
         )}
+
       </div>
     </main>
   )
