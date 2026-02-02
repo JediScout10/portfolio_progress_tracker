@@ -133,109 +133,128 @@ export default function DashboardPage() {
   const todayISO = formatLocalDate(new Date())
 
   /* ================== LOAD DATA ================== */
-
-  useEffect(() => {
-    const init = async () => {
-      const { data: { user } } = await supabase.auth.getUser()
-      if (!user) {
-        router.push('/login')
-        return
-      }
-
-     const userId = user.id
-setUserId(userId)
-
-
-      /* ---- TODAY ENTRY ---- */
-
-      let { data: entry } = await supabase
-        .from('daily_entries')
-        .select('*')
-        .eq('user_id', userId)
-        .eq('date', todayISO)
-        .single()
-
-      if (!entry) {
-        const { data: newEntry } = await supabase
-          .from('daily_entries')
-          .insert({ user_id: userId, date: todayISO })
-          .select()
-          .single()
-        entry = newEntry
-      }
-
-      setEntryId(entry.id)
-      setReflection(entry.reflection || '')
-      setCompleted(entry.completed)
-
-      const { data: taskData } = await supabase
-        .from('tasks')
-        .select('*')
-        .eq('daily_entry_id', entry.id)
-
-      setTasks(taskData || [])
-
-       /* ---- WORKOUTS ---- */
-
-      const { data: workoutData } = await supabase
-  .from('workout_entries')
-  .select('*')
-  .eq('user_id', userId)
-.eq('date', todayISO)
-
-
-setWorkouts(workoutData || [])
-
-
-      /* ---- STREAK ---- */
-
-      const { data: streakData } = await supabase
-        .from('daily_entries')
-        .select('date, completed')
-        .eq('user_id', userId)
-        .order('date', { ascending: false })
-
-      let count = 0
-      let expected = startOfDay(new Date())
-
-      for (const e of streakData || []) {
-        const d = startOfDay(new Date(e.date))
-        if (e.completed && d.getTime() === expected.getTime()) {
-          count++
-          expected.setDate(expected.getDate() - 1)
-        } else break
-      }
-
-      setStreak(count)
-
-      /* ---- HEATMAP DATA ---- */
-
-      const { data: entries } = await supabase
-        .from('daily_entries')
-        .select('id, date')
-        .eq('user_id', userId)
-        .gte('date', `${year}-01-01`)
-        .lte('date', `${year}-12-31`)
-
-      const { data: allTasks } = await supabase
-        .from('tasks')
-        .select('daily_entry_id, completed')
-
-      const heatmap = (entries ?? []).map(e => ({
-        date: e.date,
-        count:
-          allTasks?.filter(
-            t => t.daily_entry_id === e.id && t.completed
-          ).length ?? 0,
-      }))
-
-      setHeatmapData(heatmap)
-      setLoading(false)
+useEffect(() => {
+  const init = async () => {
+    const { data: { user } } = await supabase.auth.getUser()
+    if (!user) {
+      router.push('/login')
+      return
     }
 
-    init()
-  }, [router, year, todayISO])
+    const uid = user.id
+    setUserId(uid)
 
+    /* ---- TODAY ENTRY ---- */
+    let { data: entry } = await supabase
+      .from('daily_entries')
+      .select('*')
+      .eq('user_id', uid)
+      .eq('date', todayISO)
+      .single()
+
+    if (!entry) {
+      const { data: newEntry } = await supabase
+        .from('daily_entries')
+        .insert({ user_id: uid, date: todayISO })
+        .select()
+        .single()
+      entry = newEntry
+    }
+
+    setEntryId(entry.id)
+    setReflection(entry.reflection || '')
+    setCompleted(entry.completed)
+
+    /* ---- TASKS ---- */
+    const { data: taskData } = await supabase
+      .from('tasks')
+      .select('*')
+      .eq('daily_entry_id', entry.id)
+
+    setTasks(taskData || [])
+
+    /* ---- WORKOUTS ---- */
+    const { data: workoutData } = await supabase
+      .from('workout_entries')
+      .select('*')
+      .eq('user_id', uid)
+      .eq('date', todayISO)
+
+    setWorkouts(workoutData || [])
+
+    /* ---- STREAK ---- */
+    const { data: streakData } = await supabase
+      .from('daily_entries')
+      .select('date, completed')
+      .eq('user_id', uid)
+      .order('date', { ascending: false })
+
+    let count = 0
+    let expected = startOfDay(new Date())
+
+    for (const e of streakData || []) {
+      const d = startOfDay(new Date(e.date))
+      if (e.completed && d.getTime() === expected.getTime()) {
+        count++
+        expected.setDate(expected.getDate() - 1)
+      } else break
+    }
+
+    setStreak(count)
+
+    /* ---- HEATMAP ---- */
+    const { data: entries } = await supabase
+      .from('daily_entries')
+      .select('id, date')
+      .eq('user_id', uid)
+      .gte('date', `${year}-01-01`)
+      .lte('date', `${year}-12-31`)
+
+    const { data: allTasks } = await supabase
+      .from('tasks')
+      .select('daily_entry_id, completed')
+
+    const heatmap = (entries ?? []).map(e => ({
+      date: e.date,
+      count:
+        allTasks?.filter(
+          t => t.daily_entry_id === e.id && t.completed
+        ).length ?? 0,
+    }))
+
+    setHeatmapData(heatmap)
+    setLoading(false)
+  }
+
+  init()
+}, [router, year, todayISO])
+
+useEffect(() => {
+  if (!entryId || loading || completed) return
+
+  const timeout = setTimeout(async () => {
+    await supabase
+      .from('daily_entries')
+      .update({ reflection })
+      .eq('id', entryId)
+  }, 800)
+
+  return () => clearTimeout(timeout)
+}, [reflection, entryId, loading, completed])
+
+useEffect(() => {
+  const handler = (e: BeforeUnloadEvent) => {
+    if (!completed && reflection.trim()) {
+      e.preventDefault()
+      e.returnValue = ''
+    }
+  }
+
+  window.addEventListener('beforeunload', handler)
+  return () => window.removeEventListener('beforeunload', handler)
+}, [reflection, completed])
+
+  
   /* ================== ACTIONS ================== */
 
   const addTask = async () => {
@@ -307,13 +326,14 @@ const deleteWorkout = async (id: string) => {
 
 
   const finishDay = async () => {
-    await supabase
-      .from('daily_entries')
-      .update({ reflection, completed: true })
-      .eq('id', entryId)
+  await supabase
+    .from('daily_entries')
+    .update({ completed: true })
+    .eq('id', entryId)
 
-    setCompleted(true)
-  }
+  setCompleted(true)
+}
+
 
   if (loading) return <p className="p-6">Loading...</p>
 
