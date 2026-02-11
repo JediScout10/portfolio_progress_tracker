@@ -2,52 +2,59 @@
 
 import { supabase } from '@/lib/supabaseClient'
 import { useRouter } from 'next/navigation'
+import { motion } from "framer-motion"
 
 export default function HomePage() {
- const router = useRouter()
+  const router = useRouter()
 
-const openDashboard = async () => {
-  const { data: { user } } = await supabase.auth.getUser()
-
-  if (user) {
-    router.push('/dashboard')
-  } else {
-    router.push('/login')
+  const openDashboard = async () => {
+    const { data: { user } } = await supabase.auth.getUser()
+    if (user) router.push('/dashboard')
+    else router.push('/login')
   }
-}
-
 
   return (
-    <main className="min-h-screen bg-neutral-50 text-neutral-900 dark:bg-neutral-950 dark:text-neutral-100">
-      <div className="mx-auto max-w-5xl px-6 py-28">
+    <main className="relative min-h-screen bg-neutral-50 text-neutral-900 dark:bg-neutral-950 dark:text-neutral-100">
+
+      {/* Global Background Depth */}
+      <div className="pointer-events-none fixed inset-0 -z-10 overflow-hidden">
+        <div className="absolute top-[-300px] left-1/2 h-[700px] w-[900px] -translate-x-1/2 rounded-full 
+                        bg-gradient-to-r from-indigo-500/10 via-sky-500/10 to-transparent blur-3xl" />
+      </div>
+
+      <div className="mx-auto max-w-6xl px-8 py-32">
 
         {/* Header */}
-        <header className="mb-20 flex items-center justify-between">
-          <p className="text-sm text-neutral-500 dark:text-neutral-400">
-            Rohit
-          </p>
+        <header className="mb-24 flex items-center justify-between">
+          <div>
+            <h2 className="text-2xl font-semibold tracking-tight">
+              Rohit Sanju Patil
+            </h2>
+            <p className="text-sm text-neutral-500 dark:text-neutral-400">
+              Software Engineer
+            </p>
+          </div>
 
-          <a
-            href="https://github.com/JediScout10"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-sm text-neutral-500 hover:text-neutral-900 dark:hover:text-neutral-100 transition"
-          >
-            GitHub
-          </a>
+          <div className="flex items-center gap-6 text-sm">
+            <a href="https://github.com/JediScout10" target="_blank" className="hover:underline">
+              GitHub
+            </a>
+            <a href="https://www.linkedin.com/in/rohit-patil-3b5579321" target="_blank" className="hover:underline">
+              LinkedIn
+            </a>
+          </div>
         </header>
 
         {/* Hero */}
-        <section className="mb-28">
-          <h1 className="mb-6 max-w-3xl text-5xl font-semibold tracking-tight leading-tight">
-            Designing calm systems<br />
-            that work in the real world.
+        <section className="mb-32">
+          <h1 className="mb-6 max-w-4xl text-6xl font-semibold tracking-tight leading-tight">
+            Building secure, scalable<br />
+            software systems.
           </h1>
 
           <p className="mb-10 max-w-2xl text-lg text-neutral-600 dark:text-neutral-300">
-            I build focused, reliable software systems with clear intent —
-            emphasizing real-world constraints, long-term usability,
-            and minimal cognitive load.
+            I build secure backend systems and full-stack applications
+            designed for long-term maintainability and real-world constraints.
           </p>
 
           <div className="flex flex-wrap gap-4">
@@ -59,131 +66,150 @@ const openDashboard = async () => {
             >
               View projects →
             </a>
+
+            <a
+              href="/resume.pdf"
+              className="rounded-xl border border-neutral-300 px-6 py-3 text-sm font-medium
+                         hover:bg-neutral-100 dark:border-neutral-700
+                         dark:hover:bg-neutral-800 transition"
+            >
+              Download resume
+            </a>
           </div>
         </section>
 
-        {/* Philosophy */}
-        <section className="mb-28 max-w-2xl">
-          <p className="text-neutral-700 leading-relaxed dark:text-neutral-300">
-            I prefer building fewer things with intention.
-            My focus is on systems that people can realistically maintain —
-            software that stays useful after the demo ends.
-          </p>
-        </section>
+        {/* Divider */}
+        <div className="mb-20 h-px w-full bg-gradient-to-r from-transparent via-neutral-300 to-transparent dark:via-neutral-700" />
 
         {/* Projects */}
         <section id="projects">
-          <h2 className="mb-10 text-sm font-medium uppercase tracking-wider text-neutral-500 dark:text-neutral-400">
-            Selected Projects
+          <h2 className="mb-14 text-2xl font-semibold tracking-tight">
+            Selected Work
           </h2>
 
-          <div className="grid gap-8 md:grid-cols-2">
+          <div className="grid gap-10 md:grid-cols-2">
 
             {/* Progress Tracker */}
-            <div className="group rounded-2xl border border-neutral-200 bg-white p-8 shadow-sm
-                            transition hover:-translate-y-1 hover:shadow-md
-                            dark:border-neutral-800 dark:bg-neutral-900">
+            <motion.div
+              initial={{ opacity: 0, y: 40 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6 }}
+              viewport={{ once: true }}
+              className="group rounded-3xl border border-neutral-200 bg-white p-8 shadow-sm
+                         transition hover:-translate-y-1 hover:shadow-xl
+                         dark:border-neutral-800 dark:bg-neutral-900"
+            >
+              <div className="mb-6 overflow-hidden rounded-2xl border border-neutral-200 dark:border-neutral-800">
+                <img
+                  src="/progress-tracker.png"
+                  alt="Progress Tracker"
+                  className="w-full object-cover transition duration-500 group-hover:scale-105"
+                />
+              </div>
+
               <h3 className="mb-3 text-xl font-semibold">
                 Personal Progress Tracker
               </h3>
 
-              <p className="mb-5 text-neutral-600 dark:text-neutral-300">
-                A private daily discipline system built to enforce focus,
-                reflection, and consistency during job preparation.
+              <p className="mb-6 text-neutral-600 dark:text-neutral-300">
+                Serverless full-stack discipline system built with Next.js and Supabase,
+                focused on daily execution and secure data isolation.
               </p>
 
-              <ul className="mb-6 space-y-2 text-sm text-neutral-600 dark:text-neutral-400">
-                <li>• Single-day focus with task completion</li>
-                <li>• Reflection-first design</li>
-                <li>• Streak-based consistency tracking</li>
-                <li>• Supabase-authenticated private dashboard</li>
-              </ul>
-
-              <div className="flex gap-4 text-sm">
-                <button
-                  onClick={openDashboard}
-                  className="font-medium underline-offset-4 hover:underline"
-                >
-                  Open dashboard →
+              <div className="flex gap-6 text-sm">
+                <button onClick={openDashboard} className="font-medium hover:underline">
+                  Open →
                 </button>
-
-                <a
-                  href="https://github.com/JediScout10"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-neutral-500 hover:underline"
-                >
+                <a href="https://github.com/JediScout10" target="_blank" className="text-neutral-500 hover:underline">
                   GitHub →
                 </a>
               </div>
-            </div>
+            </motion.div>
 
             {/* Fraud Detection */}
-            <div className="group rounded-2xl border border-neutral-200 bg-white p-8 shadow-sm
-                            transition hover:-translate-y-1 hover:shadow-md
-                            dark:border-neutral-800 dark:bg-neutral-900">
+            <motion.div
+              initial={{ opacity: 0, y: 40 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6 }}
+              viewport={{ once: true }}
+              className="group rounded-3xl border border-neutral-200 bg-white p-8 shadow-sm
+                         transition hover:-translate-y-1 hover:shadow-xl
+                         dark:border-neutral-800 dark:bg-neutral-900"
+            >
+              <div className="mb-6 overflow-hidden rounded-2xl border border-neutral-200 dark:border-neutral-800">
+                <img
+                  src="/fraud-system.png"
+                  alt="Fraud Detection"
+                  className="w-full object-cover transition duration-500 group-hover:scale-105"
+                />
+              </div>
+
               <h3 className="mb-3 text-xl font-semibold">
-                Fraud Detection Payment System
+                Real-Time Fraud Detection System
               </h3>
 
-              <p className="mb-5 text-neutral-600 dark:text-neutral-300">
-                A real-time fraud detection platform built for Hackwins 2026,
-                combining rule-based checks with ML-based risk scoring.
+              <p className="mb-6 text-neutral-600 dark:text-neutral-300">
+                ML-powered fraud detection backend with behavioral risk analysis,
+                IP tracking, and secure transaction validation.
               </p>
 
-              <ul className="mb-6 space-y-2 text-sm text-neutral-600 dark:text-neutral-400">
-                <li>• IP & device fingerprint monitoring</li>
-                <li>• Transaction anomaly detection</li>
-                <li>• Real-time risk scoring</li>
-                <li>• Fully deployed system</li>
-              </ul>
-
-              <div className="flex gap-4 text-sm">
-                <a
-                  href="https://exekillers-hackwins2026.onrender.com/"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="font-medium underline-offset-4 hover:underline"
-                >
-                  Live demo →
+              <div className="flex gap-6 text-sm">
+                <a href="https://exekillers-hackwins2026.onrender.com/" target="_blank" className="font-medium hover:underline">
+                  Live →
                 </a>
-
-                <a
-                  href="https://github.com/JediScout10"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-neutral-500 hover:underline"
-                >
+                <a href="https://github.com/JediScout10" target="_blank" className="text-neutral-500 hover:underline">
                   GitHub →
                 </a>
               </div>
-            </div>
+            </motion.div>
 
             {/* CareConnect */}
-            <div className="group rounded-2xl border border-neutral-200 bg-white p-8 shadow-sm
-                            transition hover:-translate-y-1 hover:shadow-md
-                            dark:border-neutral-800 dark:bg-neutral-900">
+            <motion.div
+              initial={{ opacity: 0, y: 40 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6 }}
+              viewport={{ once: true }}
+              className="group rounded-3xl border border-neutral-200 bg-white p-8 shadow-sm
+                         transition hover:-translate-y-1 hover:shadow-xl
+                         dark:border-neutral-800 dark:bg-neutral-900"
+            >
+              <div className="mb-6 overflow-hidden rounded-2xl border border-neutral-200 dark:border-neutral-800">
+                <img
+                  src="/careconnect.png"
+                  alt="CareConnect"
+                  className="w-full object-cover transition duration-500 group-hover:scale-105"
+                />
+              </div>
+
               <h3 className="mb-3 text-xl font-semibold">
-                CareConnect — Mental Health Analyzer
+                CareConnect
               </h3>
 
-              <p className="mb-5 text-neutral-600 dark:text-neutral-300">
-                A mental health analysis platform designed to help users
-                understand emotional patterns through structured assessments.
+              <p className="mb-6 text-neutral-600 dark:text-neutral-300">
+                Django-based mental health platform integrating structured assessments
+                and AI-powered analysis tools.
               </p>
+            </motion.div>
 
-              <ul className="mb-6 space-y-2 text-sm text-neutral-600 dark:text-neutral-400">
-                <li>• Mood & symptom tracking</li>
-                <li>• Question-based analysis</li>
-                <li>• Stress-relief & meditation tools</li>
-                <li>• Therapist discovery support</li>
-              </ul>
+          </div>
+        </section>
 
-              <p className="text-sm text-neutral-500 dark:text-neutral-400">
-                Academic project — University of Mumbai (IT)
-              </p>
-            </div>
+        {/* Footer */}
+        <section className="mt-32 text-center">
+          <p className="text-lg font-medium">
+            Let’s build something meaningful.
+          </p>
 
+          <div className="mt-6 flex justify-center gap-6 text-sm">
+            <a href="mailto:rohitsanjupatil.rsp10@gmail.com" className="hover:underline">
+              Email
+            </a>
+            <a href="https://github.com/JediScout10" target="_blank" className="hover:underline">
+              GitHub
+            </a>
+            <a href="https://www.linkedin.com/in/rohit-patil-3b5579321" target="_blank" className="hover:underline">
+              LinkedIn
+            </a>
           </div>
         </section>
 
