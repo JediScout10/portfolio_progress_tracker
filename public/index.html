@@ -1,0 +1,1120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Rohit Sanju Patil</title>
+<meta name="description" content="Portfolio of Rohit Sanju Patil — Software Engineer, Full-Stack Developer and AI/ML enthusiast based in Mumbai, Maharashtra."/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Bangers&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,700;1,400&family=JetBrains+Mono:wght@400;600&family=Permanent+Marker&display=swap" rel="stylesheet"/>
+
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{
+  font-family:'DM Sans',sans-serif;
+  background:#0C0A08;
+  color:#F0EAD8;
+  overflow-x:hidden;
+}
+
+:root{
+  --ink:#0C0A08;
+  --paper:#F7F2E8;
+  --cream:#F0EAD8;
+  --gold:#E8A828;
+  --gold-dim:#A87818;
+  --red:#C8341A;
+  --teal:#1E7A6E;
+  --muted:#7A7060;
+  --panel-dark:#131018;
+  --panel-mid:#1A1620;
+  --border-col:#2A2530;
+  --gutter:clamp(1rem,3vw,2.5rem);
+}
+
+/* ─── NAV ─────────────────────────────── */
+#nav{
+  position:fixed;top:0;left:0;right:0;z-index:300;
+  height:52px;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0 clamp(1rem,3vw,2.5rem);
+  background:rgba(12,10,8,.95);
+  backdrop-filter:blur(12px);
+  border-bottom:2px solid #2A2530;
+}
+.nl{font-family:'Bangers',cursive;font-size:1.6rem;letter-spacing:3px;color:var(--gold);text-decoration:none;}
+.na{display:flex;gap:0;list-style:none;}
+.na a{
+  font-family:'JetBrains Mono',monospace;font-size:.65rem;letter-spacing:2px;text-transform:uppercase;
+  color:var(--muted);text-decoration:none;padding:.3rem 1rem;
+  transition:color .2s;border-right:1px solid var(--border-col);
+}
+.na a:first-child{border-left:1px solid var(--border-col);}
+.na a:hover,.na a.on{color:var(--gold);}
+.nr{
+  font-family:'JetBrains Mono',monospace;font-size:.65rem;letter-spacing:2px;
+  padding:.4rem 1.1rem;border:1px solid var(--gold-dim);
+  color:var(--gold);text-decoration:none;transition:background .2s;
+}
+.nr:hover{background:rgba(232,168,40,.1);}
+
+/* ─── MANGA PAGE WRAPPER ──────────────── */
+.manga-page{
+  max-width:1200px;
+  margin:0 auto;
+  padding:52px var(--gutter) 0;
+}
+
+/* ─── PANEL SYSTEM ────────────────────── */
+.panel{
+  position:relative;
+  border:3px solid #2A2530;
+  overflow:hidden;
+  background:var(--panel-dark);
+}
+.panel-inner{position:relative;z-index:2;}
+
+/* halftone layers */
+.ht-warm::before{
+  content:'';position:absolute;inset:0;z-index:0;
+  background-image:radial-gradient(circle,rgba(232,168,40,.12) 1.2px,transparent 1.2px);
+  background-size:11px 11px;pointer-events:none;
+}
+.ht-cool::before{
+  content:'';position:absolute;inset:0;z-index:0;
+  background-image:radial-gradient(circle,rgba(30,122,110,.14) 1px,transparent 1px);
+  background-size:9px 9px;pointer-events:none;
+}
+.ht-red::before{
+  content:'';position:absolute;inset:0;z-index:0;
+  background-image:radial-gradient(circle,rgba(200,52,26,.1) 1px,transparent 1px);
+  background-size:8px 8px;pointer-events:none;
+}
+
+/* ─── SPEED LINES ─────────────────────── */
+.speed-lines{
+  position:absolute;inset:0;z-index:1;pointer-events:none;
+  background:repeating-conic-gradient(
+    from 0deg at 70% 50%,
+    transparent 0deg,transparent 2.5deg,
+    rgba(232,168,40,.025) 2.5deg,rgba(232,168,40,.025) 3deg
+  );
+}
+
+/* ─── CHAPTER LABELS ──────────────────── */
+.ch-label{
+  font-family:'Bangers',cursive;
+  font-size:.9rem;letter-spacing:4px;
+  color:var(--gold);
+  display:inline-flex;align-items:center;gap:.6rem;
+  margin-bottom:.8rem;
+}
+.ch-label::before{content:'//';color:var(--muted);}
+
+/* ─── SPEECH BUBBLES ──────────────────── */
+.bubble{
+  position:relative;
+  background:var(--paper);
+  border:2.5px solid var(--ink);
+  border-radius:18px;
+  padding:.7rem 1.1rem;
+  font-family:'DM Sans',sans-serif;
+  font-size:.84rem;font-weight:600;
+  line-height:1.5;color:var(--ink);
+  box-shadow:3px 3px 0 var(--ink);
+  max-width:240px;
+}
+.bubble.tail-bl::after{
+  content:'';position:absolute;
+  bottom:-16px;left:18px;
+  border-left:14px solid var(--ink);
+  border-right:0 solid transparent;
+  border-top:16px solid var(--ink);
+}
+.bubble.tail-bl::before{
+  content:'';position:absolute;
+  bottom:-12px;left:21px;
+  border-left:11px solid var(--paper);
+  border-right:0 solid transparent;
+  border-top:13px solid var(--paper);
+  z-index:1;
+}
+.bubble.tail-br::after{
+  content:'';position:absolute;
+  bottom:-16px;right:18px;
+  border-right:14px solid var(--ink);
+  border-left:0 solid transparent;
+  border-top:16px solid var(--ink);
+}
+.bubble.tail-br::before{
+  content:'';position:absolute;
+  bottom:-12px;right:21px;
+  border-right:11px solid var(--paper);
+  border-left:0 solid transparent;
+  border-top:13px solid var(--paper);
+  z-index:1;
+}
+
+/* ─── SFX WORDS ───────────────────────── */
+.sfx{
+  font-family:'Bangers',cursive;
+  letter-spacing:3px;
+  -webkit-text-stroke:2px var(--ink);
+  pointer-events:none;user-select:none;
+  line-height:1;
+}
+
+/* ─── ACTION LABEL (WHOOSH etc) ───────── */
+.action-bg{
+  font-family:'Bangers',cursive;
+  font-size:clamp(6rem,18vw,22rem);
+  color:rgba(232,168,40,.03);
+  letter-spacing:-4px;
+  position:absolute;pointer-events:none;user-select:none;
+  line-height:1;
+}
+
+/* ────────────────────────────────────────
+   ① HERO PANEL — CHAPTER COVER
+─────────────────────────────────────────*/
+#hero{
+  margin-top:0;
+  display:grid;
+  grid-template-columns:1fr min(38%,460px);
+  min-height:calc(100vh - 52px);
+  border:3px solid #2A2530;
+  border-top:none;
+  position:relative;
+  overflow:hidden;
+}
+
+.hero-bg{
+  position:absolute;inset:0;z-index:0;
+  background:
+    repeating-conic-gradient(from 0deg at 60% 50%,
+      transparent 0deg,transparent 2.8deg,
+      rgba(232,168,40,.018) 2.8deg,rgba(232,168,40,.018) 3.2deg);
+}
+.hero-bg::after{
+  content:'';position:absolute;inset:0;
+  background:radial-gradient(ellipse 60% 80% at 60% 50%,rgba(232,168,40,.06) 0%,transparent 70%);
+}
+
+/* left copy side */
+.hero-l{
+  position:relative;z-index:2;
+  padding:clamp(2rem,5vw,5rem) clamp(1.5rem,4vw,4rem);
+  display:flex;flex-direction:column;justify-content:center;
+  border-right:3px solid #2A2530;
+}
+.hero-chapter{
+  font-family:'JetBrains Mono',monospace;
+  font-size:.68rem;letter-spacing:4px;color:var(--muted);
+  border-left:2px solid var(--gold);padding-left:.8rem;
+  margin-bottom:2rem;
+  display:flex;align-items:center;gap:.8rem;
+}
+.hero-chapter span{
+  background:var(--gold);color:var(--ink);
+  font-weight:700;padding:.1rem .5rem;font-size:.6rem;
+}
+.hero-name{
+  font-family:'Bangers',cursive;
+  font-size:clamp(4rem,7vw,8rem);
+  line-height:.88;letter-spacing:2px;
+  margin-bottom:.8rem;
+}
+.hero-name .line1{color:var(--cream);}
+.hero-name .line2{color:var(--cream);}
+.hero-name .line3{color:var(--gold);-webkit-text-stroke:1px var(--gold-dim);}
+.hero-role{
+  font-family:'JetBrains Mono',monospace;
+  font-size:.78rem;letter-spacing:3px;color:var(--teal);
+  text-transform:uppercase;margin-bottom:1.2rem;
+}
+.hero-desc{
+  font-size:.95rem;line-height:1.75;color:#A8A098;
+  max-width:440px;margin-bottom:2.5rem;
+}
+.hero-btns{display:flex;gap:1rem;flex-wrap:wrap;}
+.btn-a{
+  font-family:'Bangers',cursive;font-size:1.1rem;letter-spacing:2px;
+  padding:.6rem 2rem;background:var(--gold);color:var(--ink);
+  border:2.5px solid var(--ink);text-decoration:none;
+  position:relative;display:inline-block;transition:transform .12s;
+}
+.btn-a::after{content:'';position:absolute;top:4px;left:4px;width:100%;height:100%;background:var(--ink);z-index:-1;}
+.btn-a:hover{transform:translate(3px,3px);}
+.btn-b{
+  font-family:'Bangers',cursive;font-size:1.1rem;letter-spacing:2px;
+  padding:.6rem 2rem;background:transparent;color:var(--cream);
+  border:2.5px solid #2A2530;text-decoration:none;
+  display:inline-block;transition:border-color .2s,color .2s;
+}
+.btn-b:hover{border-color:var(--cream);}
+
+.hero-stats{
+  position:absolute;bottom:2.5rem;left:clamp(1.5rem,4vw,4rem);
+  display:flex;gap:2.5rem;
+}
+.hstat{border-left:2.5px solid var(--gold);padding-left:.8rem;}
+.hstat-n{font-family:'Bangers',cursive;font-size:2.2rem;color:var(--gold);letter-spacing:1px;}
+.hstat-l{font-family:'JetBrains Mono',monospace;font-size:.58rem;letter-spacing:2px;color:var(--muted);text-transform:uppercase;}
+
+/* right character side */
+.hero-r{
+  position:relative;z-index:2;
+  display:flex;flex-direction:column;
+  align-items:center;justify-content:flex-end;
+  overflow:hidden;
+  background:rgba(0,0,0,.15);
+}
+.hero-r .action-bg{bottom:-2rem;right:-2rem;color:rgba(232,168,40,.035);}
+.hero-char{
+  width:90%;max-width:380px;
+  position:relative;z-index:3;
+  filter:drop-shadow(-8px 0 40px rgba(232,168,40,.18));
+  transform:translateY(4px);
+}
+.hero-bubble{
+  position:absolute;top:2.5rem;left:1.5rem;z-index:4;
+}
+.hero-issue{
+  position:absolute;top:1.2rem;right:1rem;
+  font-family:'JetBrains Mono',monospace;
+  font-size:.6rem;letter-spacing:2px;
+  color:var(--muted);text-align:right;
+}
+
+/* ────────────────────────────────────────
+   ROW DIVIDERS — comic page gutter lines
+─────────────────────────────────────────*/
+.gutter-line{
+  height:6px;
+  background:var(--ink);
+  position:relative;
+}
+.gutter-line::after{
+  content:'';display:block;height:2px;
+  background:repeating-linear-gradient(90deg,
+    var(--gold-dim) 0,var(--gold-dim) 16px,
+    transparent 16px,transparent 22px
+  );
+  opacity:.3;
+  margin-top:1px;
+}
+
+/* ────────────────────────────────────────
+   ② ABOUT — 2-PANEL SPREAD
+─────────────────────────────────────────*/
+.about-spread{
+  display:grid;
+  grid-template-columns:min(36%,340px) 1fr;
+  border:3px solid #2A2530;border-top:none;
+  min-height:520px;
+}
+.about-char-panel{
+  border-right:3px solid #2A2530;
+  position:relative;
+  display:flex;flex-direction:column;
+  align-items:center;justify-content:flex-end;
+  overflow:hidden;
+  padding-bottom:0;
+}
+.about-char-panel .action-bg{
+  font-size:clamp(5rem,14vw,18rem);
+  bottom:-1rem;left:-2rem;
+  color:rgba(30,122,110,.05);
+}
+.about-char{
+  width:88%;max-width:300px;
+  position:relative;z-index:2;
+  filter:drop-shadow(0 -4px 24px rgba(30,122,110,.2));
+}
+.about-char-bubble{
+  position:absolute;top:2rem;right:-12px;z-index:3;
+}
+
+.about-text-panel{
+  padding:clamp(2rem,4vw,3.5rem);
+  display:flex;flex-direction:column;justify-content:center;
+  position:relative;
+}
+.about-text-panel .action-bg{
+  top:-2rem;right:-1rem;
+  font-size:clamp(6rem,12vw,15rem);
+  color:rgba(232,168,40,.025);
+}
+
+.about-name-big{
+  font-family:'Bangers',cursive;
+  font-size:clamp(2.5rem,4vw,4rem);
+  letter-spacing:2px;color:var(--cream);
+  line-height:.9;margin-bottom:1.2rem;
+}
+.about-name-big em{font-style:normal;color:var(--gold);}
+
+.about-para{font-size:.93rem;line-height:1.8;color:#B0A898;margin-bottom:1rem;}
+
+.about-tags{display:flex;flex-wrap:wrap;gap:.5rem;margin:1.2rem 0;}
+.atag{
+  font-family:'JetBrains Mono',monospace;font-size:.65rem;letter-spacing:1.5px;text-transform:uppercase;
+  padding:.28rem .7rem;border:1px solid #2A2530;color:var(--muted);
+  transition:border-color .2s,color .2s;
+}
+.atag:hover{border-color:var(--gold);color:var(--gold);}
+
+.edu-box{
+  margin-top:1.5rem;padding:1rem 1.2rem;
+  border:1px solid #2A2530;
+  border-left:3px solid var(--teal);
+  background:rgba(30,122,110,.05);
+}
+.edu-box h4{font-family:'Bangers',cursive;font-size:1.3rem;letter-spacing:2px;color:var(--teal);}
+.edu-box p{font-family:'JetBrains Mono',monospace;font-size:.68rem;letter-spacing:1.5px;color:var(--muted);margin-top:.3rem;}
+
+/* ────────────────────────────────────────
+   ③ SKILLS — CONSTELLATION PANEL
+─────────────────────────────────────────*/
+.skills-panel{
+  border:3px solid #2A2530;border-top:none;
+  padding:clamp(2.5rem,5vw,4rem) clamp(1.5rem,4vw,3rem);
+  position:relative;
+  overflow:hidden;
+}
+.skills-panel .action-bg{
+  bottom:-3rem;right:-2rem;font-size:clamp(8rem,20vw,28rem);
+  color:rgba(200,52,26,.03);
+}
+.skills-header{
+  display:flex;align-items:flex-end;justify-content:space-between;
+  margin-bottom:2.5rem;
+  border-bottom:1px solid #2A2530;
+  padding-bottom:1.2rem;
+}
+.sh-l h2{
+  font-family:'Bangers',cursive;
+  font-size:clamp(2.5rem,5vw,4.5rem);
+  letter-spacing:3px;color:var(--cream);
+  line-height:.9;
+}
+.sh-l h2 span{color:var(--red);}
+.sh-r{
+  font-family:'JetBrains Mono',monospace;font-size:.65rem;
+  letter-spacing:2px;color:var(--muted);text-align:right;
+}
+
+/* Skill grid — each skill is a "power card" */
+.skill-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(180px,1fr));
+  gap:1px;background:#2A2530;
+  border:1px solid #2A2530;
+}
+.sk{
+  background:var(--panel-dark);
+  padding:1.3rem 1.1rem 1rem;
+  cursor:default;
+  transition:background .2s,transform .15s;
+  position:relative;overflow:hidden;
+}
+.sk::before{
+  content:'';position:absolute;
+  bottom:0;left:0;right:0;height:2.5px;
+  background:var(--bar-color,var(--gold));
+  transform:scaleX(0);transform-origin:left;
+  transition:transform 1.3s cubic-bezier(.4,0,.2,1);
+}
+.sk.lit::before{transform:scaleX(var(--pct,.7));}
+.sk:hover{background:var(--panel-mid);}
+.sk-cat{
+  font-family:'JetBrains Mono',monospace;font-size:.58rem;
+  letter-spacing:2px;text-transform:uppercase;
+  margin-bottom:.5rem;
+}
+.sk-name{font-size:.95rem;font-weight:600;color:var(--cream);line-height:1.3;}
+.sk-lvl{
+  font-family:'JetBrains Mono',monospace;font-size:.6rem;
+  letter-spacing:1px;color:var(--muted);margin-top:.4rem;
+}
+
+/* ────────────────────────────────────────
+   ④ PROJECTS — MISSION BRIEFINGS
+─────────────────────────────────────────*/
+.projects-section{
+  border:3px solid #2A2530;border-top:none;
+  position:relative;overflow:hidden;
+}
+.projects-hdr{
+  padding:2rem clamp(1.5rem,4vw,3rem) 1.5rem;
+  border-bottom:3px solid #2A2530;
+  display:grid;
+  grid-template-columns:1fr min(30%,320px);
+  align-items:end;
+  gap:1.5rem;
+  position:relative;
+}
+.projects-hdr::after{
+  content:'MISSIONS';
+  font-family:'Bangers',cursive;
+  font-size:clamp(5rem,14vw,20rem);
+  color:rgba(200,52,26,.03);
+  position:absolute;right:-1rem;bottom:-1rem;
+  letter-spacing:-4px;line-height:1;
+  pointer-events:none;
+}
+.ph-l h2{
+  font-family:'Bangers',cursive;
+  font-size:clamp(2.5rem,5vw,4.5rem);
+  letter-spacing:3px;line-height:.9;color:var(--cream);
+}
+.ph-l h2 span{color:var(--gold);}
+.ph-r{position:relative;text-align:right;}
+.ph-char{
+  width:min(220px,30vw);
+  filter:drop-shadow(-4px 0 20px rgba(232,168,40,.2));
+  position:relative;z-index:2;
+}
+.ph-bubble{
+  position:absolute;top:0;right:100%;margin-right:8px;
+  white-space:nowrap;z-index:3;
+}
+
+/* Project grid */
+.proj-grid{
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  background:#2A2530;gap:3px;
+  border-top:3px solid #2A2530;
+}
+.pcard{
+  background:var(--panel-dark);
+  padding:2rem;
+  position:relative;overflow:hidden;
+  transition:background .25s;
+  cursor:default;
+}
+.pcard:hover{background:var(--panel-mid);}
+.pcard-num{
+  position:absolute;top:-1rem;right:.8rem;
+  font-family:'Bangers',cursive;font-size:7rem;line-height:1;
+  color:rgba(255,255,255,.03);pointer-events:none;user-select:none;
+}
+.ptag{
+  font-family:'JetBrains Mono',monospace;font-size:.6rem;
+  letter-spacing:2px;text-transform:uppercase;
+  padding:.2rem .6rem;border:1px solid;
+  display:inline-block;margin-bottom:.9rem;
+}
+.ptag-ml{color:var(--red);border-color:rgba(200,52,26,.4);background:rgba(200,52,26,.06);}
+.ptag-web{color:var(--teal);border-color:rgba(30,122,110,.4);background:rgba(30,122,110,.06);}
+.ptag-do{color:#7B9AE0;border-color:rgba(123,154,224,.4);background:rgba(123,154,224,.06);}
+.ptag-fs{color:var(--gold);border-color:rgba(232,168,40,.4);background:rgba(232,168,40,.06);}
+.pt{
+  font-family:'Bangers',cursive;
+  font-size:1.6rem;letter-spacing:2px;
+  color:var(--cream);line-height:1.1;margin-bottom:.6rem;
+}
+.pd{font-size:.86rem;line-height:1.65;color:#9A9088;margin-bottom:1rem;}
+.pstack{display:flex;flex-wrap:wrap;gap:.3rem;margin-bottom:1.1rem;}
+.pst{
+  font-family:'JetBrains Mono',monospace;font-size:.6rem;letter-spacing:1px;
+  padding:.18rem .5rem;background:rgba(255,255,255,.04);border:1px solid #2A2530;color:var(--muted);
+}
+.plinks{display:flex;gap:.5rem;}
+.pl{
+  font-family:'JetBrains Mono',monospace;font-size:.65rem;letter-spacing:1.5px;text-transform:uppercase;
+  padding:.3rem .8rem;border:1px solid #2A2530;color:var(--muted);text-decoration:none;
+  transition:border-color .2s,color .2s;
+}
+.pl:hover,.pl.hi{border-color:var(--gold);color:var(--gold);}
+
+/* ────────────────────────────────────────
+   ⑤ CERTS STRIP
+─────────────────────────────────────────*/
+.certs-section{
+  border:3px solid #2A2530;border-top:none;
+  padding:clamp(2rem,4vw,3.5rem) clamp(1.5rem,4vw,3rem);
+  position:relative;overflow:hidden;
+}
+.certs-hdr{
+  display:grid;grid-template-columns:1fr min(28%,280px);
+  align-items:end;gap:1rem;margin-bottom:2rem;
+  border-bottom:1px solid #2A2530;padding-bottom:1.2rem;
+}
+.certs-hdr h2{
+  font-family:'Bangers',cursive;
+  font-size:clamp(2.5rem,5vw,4.5rem);
+  letter-spacing:3px;line-height:.9;color:var(--cream);
+}
+.certs-hdr h2 span{color:var(--teal);}
+.cert-char{width:min(200px,28vw);filter:drop-shadow(0 -4px 16px rgba(30,122,110,.25));}
+
+.certs-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(260px,1fr));
+  gap:1px;background:#2A2530;border:1px solid #2A2530;
+}
+.cc{
+  background:var(--panel-dark);padding:1.2rem 1.4rem;
+  display:flex;align-items:flex-start;gap:.9rem;
+  transition:background .2s;
+}
+.cc:hover{background:var(--panel-mid);}
+.ci{
+  width:36px;height:36px;flex-shrink:0;
+  background:rgba(232,168,40,.08);border:1px solid var(--gold-dim);
+  display:flex;align-items:center;justify-content:center;
+  font-family:'Bangers',cursive;font-size:.85rem;color:var(--gold);letter-spacing:1px;
+}
+.cn{font-size:.87rem;font-weight:600;color:var(--cream);line-height:1.35;}
+.co{font-family:'JetBrains Mono',monospace;font-size:.6rem;letter-spacing:1.5px;color:var(--muted);margin-top:.25rem;}
+
+/* ────────────────────────────────────────
+   ⑥ CONTACT — FINAL CHAPTER
+─────────────────────────────────────────*/
+.contact-section{
+  border:3px solid #2A2530;border-top:none;
+  display:grid;grid-template-columns:1fr min(40%,460px);
+  min-height:560px;position:relative;overflow:hidden;
+}
+.contact-left{
+  padding:clamp(2.5rem,5vw,4.5rem) clamp(1.5rem,4vw,3.5rem);
+  display:flex;flex-direction:column;justify-content:center;
+  border-right:3px solid #2A2530;
+  position:relative;
+}
+.cl-big{
+  font-family:'Bangers',cursive;
+  font-size:clamp(3rem,5.5vw,6.5rem);
+  line-height:.88;letter-spacing:2px;
+  color:var(--cream);margin-bottom:1.5rem;
+}
+.cl-big span{color:var(--gold);}
+.cl-sub{font-size:.93rem;line-height:1.75;color:#A0988C;max-width:400px;margin-bottom:2rem;}
+.contact-links{display:flex;flex-direction:column;}
+.clink{
+  display:flex;align-items:center;gap:.8rem;
+  font-size:.9rem;color:var(--muted);text-decoration:none;
+  border-bottom:1px solid #2A2530;padding:.65rem 0;
+  transition:color .2s;
+}
+.clink:hover{color:var(--gold);}
+.cl-lbl{
+  font-family:'JetBrains Mono',monospace;font-size:.6rem;
+  letter-spacing:2px;text-transform:uppercase;color:var(--gold-dim);width:65px;flex-shrink:0;
+}
+
+.contact-right{
+  padding:clamp(2.5rem,4vw,3.5rem);
+  display:flex;flex-direction:column;
+  justify-content:center;
+  position:relative;overflow:hidden;
+}
+.contact-right .action-bg{
+  font-size:clamp(6rem,14vw,20rem);
+  bottom:-2rem;right:-2rem;color:rgba(232,168,40,.03);
+}
+.contact-form{background:rgba(255,255,255,.02);border:1px solid #2A2530;padding:1.8rem;}
+.fg{margin-bottom:1.1rem;}
+.fl{
+  font-family:'JetBrains Mono',monospace;font-size:.6rem;letter-spacing:2px;text-transform:uppercase;
+  color:var(--muted);display:block;margin-bottom:.35rem;
+}
+.fi{
+  width:100%;background:rgba(255,255,255,.03);
+  border:1px solid #2A2530;padding:.6rem .8rem;
+  font-family:'DM Sans',sans-serif;font-size:.9rem;color:var(--cream);
+  outline:none;transition:border-color .2s;
+}
+.fi:focus{border-color:var(--gold-dim);}
+textarea.fi{resize:vertical;min-height:90px;}
+.fsub{
+  font-family:'Bangers',cursive;font-size:1.1rem;letter-spacing:2px;
+  width:100%;padding:.65rem;background:var(--gold);color:var(--ink);
+  border:none;cursor:pointer;position:relative;transition:transform .12s;
+}
+.fsub::after{content:'';position:absolute;top:4px;left:4px;width:100%;height:100%;background:var(--ink);z-index:-1;}
+.fsub:hover{transform:translate(3px,3px);}
+
+/* "TO BE CONTINUED" strip */
+.tbc{
+  border:3px solid #2A2530;border-top:none;
+  padding:1.5rem 2.5rem;
+  display:flex;align-items:center;justify-content:space-between;
+  background:var(--gold);
+}
+.tbc-l{font-family:'Bangers',cursive;font-size:1.8rem;letter-spacing:4px;color:var(--ink);}
+.tbc-r{font-family:'JetBrains Mono',monospace;font-size:.65rem;letter-spacing:3px;color:var(--ink);opacity:.7;}
+
+/* ─── REVEAL SYSTEM ───────────────────── */
+.rev{opacity:0;transform:translateY(20px);transition:opacity .55s ease,transform .55s ease;}
+.rev.v{opacity:1;transform:translateY(0);}
+.rev-l{opacity:0;transform:translateX(-20px);transition:opacity .6s ease,transform .6s ease;}
+.rev-l.v{opacity:1;transform:translateX(0);}
+.rev-r{opacity:0;transform:translateX(20px);transition:opacity .6s ease,transform .6s ease;}
+.rev-r.v{opacity:1;transform:translateX(0);}
+
+/* ─── SFX TOAST ───────────────────────── */
+#sfx-toast{
+  position:fixed;z-index:500;
+  pointer-events:none;
+  font-family:'Bangers',cursive;
+  font-size:clamp(2rem,6vw,5rem);
+  letter-spacing:4px;
+  -webkit-text-stroke:2px var(--ink);
+  opacity:0;
+  transition:opacity .3s,transform .3s;
+  transform:scale(.8) rotate(-8deg);
+}
+#sfx-toast.pop{opacity:1;transform:scale(1) rotate(-6deg);}
+
+/* ─── SCROLLBAR ───────────────────────── */
+::-webkit-scrollbar{width:5px;}
+::-webkit-scrollbar-track{background:var(--ink);}
+::-webkit-scrollbar-thumb{background:#2A2530;}
+
+/* ─── RESPONSIVE ──────────────────────── */
+@media(max-width:860px){
+  #hero{grid-template-columns:1fr;}
+  .hero-r{display:none;}
+  .about-spread{grid-template-columns:1fr;}
+  .about-char-panel{display:none;}
+  .proj-grid{grid-template-columns:1fr;}
+  .contact-section{grid-template-columns:1fr;}
+  .contact-right{border-top:3px solid #2A2530;}
+  .projects-hdr{grid-template-columns:1fr;}
+  .ph-r{display:none;}
+  .certs-hdr{grid-template-columns:1fr;}
+  .cert-char{display:none;}
+  .na{display:none;}
+}
+@media(max-width:540px){
+  .hero-stats{gap:1.2rem;}
+  .skill-grid{grid-template-columns:repeat(2,1fr);}
+}
+</style>
+</head>
+<body>
+
+<!-- ─── NAV ──────────────────────────────── -->
+<nav id="nav">
+  <a href="#hero" class="nl">RSP</a>
+  <ul class="na">
+    <li><a href="#about">About</a></li>
+    <li><a href="#skills">Skills</a></li>
+    <li><a href="#projects">Projects</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+  <a href="mailto:rohitsanjupatil.rsp10@gmail.com" class="nr">Hire Me →</a>
+</nav>
+
+<!-- SFX Toast -->
+<div id="sfx-toast"></div>
+
+<!-- ─── MANGA PAGE ────────────────────────── -->
+<div class="manga-page">
+
+<!-- ═══════════════════════════════════════
+     ① HERO — CHAPTER COVER
+════════════════════════════════════════ -->
+<section id="hero">
+  <div class="hero-bg"></div>
+
+  <div class="hero-l">
+    <div class="hero-chapter">
+      PORTFOLIO · ISSUE 001 · 2025
+      <span>NEW</span>
+    </div>
+    <h1 class="hero-name">
+      <div class="line1">ROHIT</div>
+      <div class="line2">SANJU</div>
+      <div class="line3">PATIL.</div>
+    </h1>
+    <p class="hero-role">// Software Engineer · Full-Stack · AI/ML</p>
+    <p class="hero-desc">
+      Building secure backend systems and full-stack applications
+      designed for long-term maintainability and real-world constraints.
+      Based in Mumbai, Maharashtra.
+    </p>
+    <div class="hero-btns">
+      <a href="#projects" class="btn-a">View Projects</a>
+      <a href="#contact" class="btn-b">Get in Touch</a>
+    </div>
+    <div class="hero-stats">
+      <div class="hstat"><div class="hstat-n">5+</div><div class="hstat-l">Projects</div></div>
+      <div class="hstat"><div class="hstat-n">6</div><div class="hstat-l">Internships</div></div>
+      <div class="hstat"><div class="hstat-n">2027</div><div class="hstat-l">Graduate</div></div>
+    </div>
+  </div>
+
+  <div class="hero-r ht-warm">
+    <div class="action-bg" style="bottom:-2rem;right:-1rem;font-size:clamp(8rem,18vw,22rem);">RSP</div>
+    <div class="hero-issue">APSIT · MUMBAI UNIV<br>ISSUE #001</div>
+    <div class="hero-bubble">
+      <div class="bubble tail-bl" style="font-size:.78rem;">
+        Hey! Welcome to my portfolio.<br>Scroll down to see my work!
+      </div>
+    </div>
+    <!-- Hero → character_wave.png -->
+    <img class="hero-char" src="/static/character_wave.png" alt="Rohit waving"/>
+  </div>
+</section>
+
+<div class="gutter-line"></div>
+
+<!-- ═══════════════════════════════════════
+     ② ABOUT — 2-PANEL SPREAD
+════════════════════════════════════════ -->
+<section id="about">
+<div class="about-spread">
+  <div class="about-char-panel ht-cool rev-l">
+    <div class="action-bg">ORIGIN</div>
+    <div class="about-char-bubble">
+      <div class="bubble tail-br" style="font-size:.76rem;max-width:200px;">
+        This is me in my natural habitat — thinking about clean architecture.
+      </div>
+    </div>
+    <!-- About → character_idle.png -->
+    <img class="about-char" src="/static/character_idle.png" alt="Rohit thinking about architecture"/>
+  </div>
+
+  <div class="about-text-panel">
+    <div class="action-bg">LORE</div>
+    <div class="panel-inner rev">
+      <div class="ch-label">Chapter 02 · Origin Story</div>
+      <h2 class="about-name-big">ROHIT<br><em>SANJU PATIL</em></h2>
+      <p class="about-para">
+        Final-year B.E. CS student at APSIT, Mumbai University. I build systems that are
+        secure by design — from backend APIs to full-stack products. My work focuses on
+        correctness, maintainability, and real-world constraints.
+      </p>
+      <p class="about-para">
+        I've completed 6 internships across domains including ML, web security, and
+        enterprise systems. Currently focused on backend engineering and AI-integrated products.
+      </p>
+      <div class="about-tags">
+        <span class="atag">Python</span>
+        <span class="atag">FastAPI</span>
+        <span class="atag">Next.js</span>
+        <span class="atag">Django</span>
+        <span class="atag">Supabase</span>
+        <span class="atag">Firebase</span>
+        <span class="atag">ML/AI</span>
+        <span class="atag">Docker</span>
+        <span class="atag">PostgreSQL</span>
+      </div>
+      <div class="edu-box">
+        <h4>B.E. COMPUTER SCIENCE</h4>
+        <p>APSIT · Mumbai University · 2021–2025 · CGPA 8.4</p>
+      </div>
+    </div>
+  </div>
+</div>
+</section>
+
+<div class="gutter-line"></div>
+
+<!-- ═══════════════════════════════════════
+     ③ SKILLS — CONSTELLATION PANEL
+════════════════════════════════════════ -->
+<section id="skills">
+<div class="skills-panel">
+  <div class="action-bg">POWER</div>
+  <div class="skills-header rev">
+    <div class="sh-l">
+      <div class="ch-label">Chapter 03 · Power Level</div>
+      <h2>SKILL<br><span>SET</span></h2>
+    </div>
+    <div class="sh-r">
+      // Measured in<br>real-world deployment
+    </div>
+  </div>
+
+  <!-- Skills character panel (inside skills section) -->
+  <!-- Skills → character_think.png -->
+  <div style="display:flex;gap:24px;align-items:flex-start;margin-bottom:2rem;">
+    <img src="/static/character_think.png" alt="Rohit thinking about skills"
+         style="width:min(160px,22vw);filter:drop-shadow(0 -4px 20px rgba(200,52,26,.2));flex-shrink:0;"/>
+    <div class="skill-grid" id="skill-grid" style="flex:1;">
+      <!-- Skills injected by JS -->
+    </div>
+  </div>
+</div>
+</section>
+
+<div class="gutter-line"></div>
+
+<!-- ═══════════════════════════════════════
+     ④ PROJECTS — MISSION BRIEFINGS
+════════════════════════════════════════ -->
+<section id="projects">
+<div class="projects-section">
+  <div class="projects-hdr">
+    <div class="ph-l rev">
+      <div class="ch-label">Chapter 04 · Mission Log</div>
+      <h2>ACTIVE<br><span>PROJECTS</span></h2>
+    </div>
+    <div class="ph-r rev-r">
+      <div class="ph-bubble">
+        <div class="bubble tail-br" style="font-size:.74rem;">
+          These are live. Go check them out.
+        </div>
+      </div>
+      <!-- Projects → character_point.png -->
+      <img class="ph-char" src="/static/character_point.png" alt="Rohit pointing at projects"/>
+    </div>
+  </div>
+
+  <div class="proj-grid" id="proj-grid">
+    <!-- Cards injected by JS -->
+  </div>
+</div>
+</section>
+
+<div class="gutter-line"></div>
+
+<!-- ═══════════════════════════════════════
+     ⑤ CERTIFICATIONS
+════════════════════════════════════════ -->
+<section id="certs">
+<div class="certs-section">
+  <div class="certs-hdr rev">
+    <div>
+      <div class="ch-label">Chapter 05 · Credentials</div>
+      <h2>CERTIFI<br><span>CATIONS</span></h2>
+    </div>
+    <!-- Certs also use idle pose (thinking/idle is fine for certs) -->
+    <img class="cert-char" src="/static/character_idle.png" alt="Rohit with certifications"/>
+  </div>
+
+  <div class="certs-grid" id="certs-grid">
+    <!-- Certs injected by JS -->
+  </div>
+</div>
+</section>
+
+<div class="gutter-line"></div>
+
+<!-- ═══════════════════════════════════════
+     ⑥ CONTACT — FINAL CHAPTER
+════════════════════════════════════════ -->
+<section id="contact">
+<div class="contact-section">
+  <div class="contact-left rev-l">
+    <div class="ch-label">Chapter 06 · Transmission</div>
+    <h2 class="cl-big">LET'S<br><span>LINK UP</span></h2>
+    <p class="cl-sub">
+      Open to backend engineering roles, AI/ML projects, and consulting work.
+      Based in Mumbai — available remotely worldwide.
+    </p>
+    <div class="contact-links">
+      <a href="mailto:rohitsanjupatil.rsp10@gmail.com" class="clink">
+        <span class="cl-lbl">Email</span>
+        rohitsanjupatil.rsp10@gmail.com
+      </a>
+      <a href="https://github.com/JediScout10" target="_blank" rel="noopener" class="clink">
+        <span class="cl-lbl">GitHub</span>
+        github.com/JediScout10
+      </a>
+      <a href="https://www.linkedin.com/in/rohit-patil-3b5579321" target="_blank" rel="noopener" class="clink">
+        <span class="cl-lbl">LinkedIn</span>
+        linkedin.com/in/rohit-patil-3b5579321
+      </a>
+      <a href="https://exekillers-hackwins2026.onrender.com/" target="_blank" rel="noopener" class="clink">
+        <span class="cl-lbl">Live Demo</span>
+        FinShield · Fraud Detection System
+      </a>
+    </div>
+  </div>
+
+  <div class="contact-right">
+    <div class="action-bg">SEND</div>
+    <!-- Contact → character_talk.png -->
+    <img src="/static/character_talk.png" alt="Rohit ready to talk"
+         style="width:min(140px,20vw);filter:drop-shadow(-4px 0 18px rgba(232,168,40,.2));margin-bottom:1.5rem;position:relative;z-index:2;align-self:flex-end;"/>
+    <form class="contact-form" id="contact-form" onsubmit="handleContact(event)">
+      <div class="fg">
+        <label class="fl" for="cf-name">Name</label>
+        <input id="cf-name" class="fi" type="text" placeholder="Your name" required/>
+      </div>
+      <div class="fg">
+        <label class="fl" for="cf-email">Email</label>
+        <input id="cf-email" class="fi" type="email" placeholder="your@email.com" required/>
+      </div>
+      <div class="fg">
+        <label class="fl" for="cf-msg">Message</label>
+        <textarea id="cf-msg" class="fi" placeholder="What are you building?" required></textarea>
+      </div>
+      <button class="fsub" type="submit">TRANSMIT MESSAGE →</button>
+    </form>
+  </div>
+</div>
+</section>
+
+<!-- TO BE CONTINUED -->
+<div class="tbc">
+  <span class="tbc-l">TO BE CONTINUED…</span>
+  <span class="tbc-r">NEXT CHAPTER: MORE PROJECTS // STAY TUNED</span>
+</div>
+
+</div><!-- /.manga-page -->
+
+<!-- ═══════════════════════════════════════
+     SCRIPTS
+════════════════════════════════════════ -->
+<script>
+/* ───── DATA ───── */
+const SKILLS = [
+  {cat:'Backend',name:'Python / FastAPI',lvl:'Expert',pct:.9,color:'var(--gold)'},
+  {cat:'Backend',name:'Django / DRF',lvl:'Advanced',pct:.82,color:'var(--gold)'},
+  {cat:'Frontend',name:'Next.js / React',lvl:'Advanced',pct:.78,color:'var(--teal)'},
+  {cat:'Frontend',name:'Tailwind CSS',lvl:'Proficient',pct:.75,color:'var(--teal)'},
+  {cat:'Database',name:'PostgreSQL',lvl:'Advanced',pct:.80,color:'#7B9AE0'},
+  {cat:'Database',name:'Supabase / Firebase',lvl:'Proficient',pct:.72,color:'#7B9AE0'},
+  {cat:'ML / AI',name:'Scikit-learn',lvl:'Proficient',pct:.70,color:'var(--red)'},
+  {cat:'ML / AI',name:'Pandas / NumPy',lvl:'Advanced',pct:.78,color:'var(--red)'},
+  {cat:'DevOps',name:'Docker',lvl:'Intermediate',pct:.62,color:'var(--muted)'},
+  {cat:'DevOps',name:'Git / GitHub',lvl:'Expert',pct:.92,color:'var(--muted)'},
+  {cat:'Security',name:'JWT / OAuth2',lvl:'Advanced',pct:.80,color:'#C8A060'},
+  {cat:'Security',name:'Secure Architecture',lvl:'Proficient',pct:.74,color:'#C8A060'},
+];
+
+const PROJECTS = [
+  {
+    num:'01',tag:'ptag-fs',tagLabel:'Full-Stack',
+    title:'Personal Progress Tracker',
+    desc:'Serverless discipline system built with Next.js and Supabase. Daily execution tracking with secure data isolation and row-level security.',
+    stack:['Next.js','Supabase','TypeScript','PostgreSQL'],
+    links:[{label:'OPEN',href:'/',hi:true},{label:'GITHUB',href:'https://github.com/JediScout10'}]
+  },
+  {
+    num:'02',tag:'ptag-ml',tagLabel:'ML / Security',
+    title:'FinShield — Fraud Detection',
+    desc:'ML-powered fraud detection backend with behavioral risk analysis, IP tracking, Firebase auth telemetry, and secure transaction validation.',
+    stack:['Python','FastAPI','Firebase','Scikit-learn','Docker'],
+    links:[{label:'LIVE',href:'https://exekillers-hackwins2026.onrender.com/',hi:true},{label:'GITHUB',href:'https://github.com/JediScout10'}]
+  },
+  {
+    num:'03',tag:'ptag-web',tagLabel:'Web / Django',
+    title:'CareConnect',
+    desc:'Django-based mental health platform integrating structured assessments and AI-powered analysis tools for clinical insights.',
+    stack:['Django','Python','PostgreSQL','REST API'],
+    links:[{label:'GITHUB',href:'https://github.com/JediScout10'}]
+  },
+  {
+    num:'04',tag:'ptag-do',tagLabel:'DevOps',
+    title:'Secure Auth System',
+    desc:'JWT-based authentication system with refresh token rotation, device fingerprinting, brute-force protection, and audit logging.',
+    stack:['FastAPI','JWT','Redis','PostgreSQL'],
+    links:[{label:'GITHUB',href:'https://github.com/JediScout10'}]
+  }
+];
+
+const CERTS = [
+  {abbr:'GCP',name:'Google Cloud Fundamentals',org:'Google · 2024'},
+  {abbr:'ML',name:'Machine Learning Specialization',org:'Coursera / DeepLearning.AI · 2024'},
+  {abbr:'PY',name:'Python for Data Science',org:'IBM · 2023'},
+  {abbr:'SEC',name:'Cybersecurity Fundamentals',org:'IBM · 2024'},
+  {abbr:'SQL',name:'SQL for Data Science',org:'UC Davis / Coursera · 2023'},
+  {abbr:'API',name:'REST API Design & Security',org:'Postman · 2024'},
+];
+
+/* ───── RENDER SKILLS ───── */
+const sg = document.getElementById('skill-grid');
+SKILLS.forEach(s => {
+  const d = document.createElement('div');
+  d.className = 'sk';
+  d.style.setProperty('--bar-color', s.color);
+  d.style.setProperty('--pct', s.pct);
+  d.innerHTML = `<div class="sk-cat" style="color:${s.color}">${s.cat}</div>
+                 <div class="sk-name">${s.name}</div>
+                 <div class="sk-lvl">${s.lvl} · ${Math.round(s.pct*100)}%</div>`;
+  sg.appendChild(d);
+});
+
+/* ───── RENDER PROJECTS ───── */
+const pg = document.getElementById('proj-grid');
+PROJECTS.forEach(p => {
+  const linksHTML = p.links.map(l =>
+    `<a href="${l.href}" ${l.href.startsWith('http')?'target="_blank" rel="noopener"':''} class="pl${l.hi?' hi':''}">${l.label}</a>`
+  ).join('');
+  const stackHTML = p.stack.map(s=>`<span class="pst">${s}</span>`).join('');
+  const d = document.createElement('div');
+  d.className = 'pcard rev';
+  d.innerHTML = `<div class="pcard-num">${p.num}</div>
+                 <span class="ptag ${p.tag}">${p.tagLabel}</span>
+                 <div class="pt">${p.title}</div>
+                 <p class="pd">${p.desc}</p>
+                 <div class="pstack">${stackHTML}</div>
+                 <div class="plinks">${linksHTML}</div>`;
+  pg.appendChild(d);
+});
+
+/* ───── RENDER CERTS ───── */
+const cg = document.getElementById('certs-grid');
+CERTS.forEach(c => {
+  const d = document.createElement('div');
+  d.className = 'cc rev';
+  d.innerHTML = `<div class="ci">${c.abbr}</div>
+                 <div><div class="cn">${c.name}</div><div class="co">${c.org}</div></div>`;
+  cg.appendChild(d);
+});
+
+/* ───── INTERSECTION OBSERVER — REVEALS ───── */
+const revEls = document.querySelectorAll('.rev,.rev-l,.rev-r');
+const io = new IntersectionObserver((entries)=>{
+  entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('v');io.unobserve(e.target);}});
+},{threshold:.1});
+revEls.forEach(el=>io.observe(el));
+
+/* ───── SKILL BAR OBSERVER ───── */
+const skEls = document.querySelectorAll('.sk');
+const skIO = new IntersectionObserver((entries)=>{
+  entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('lit');skIO.unobserve(e.target);}});
+},{threshold:.2});
+skEls.forEach(el=>skIO.observe(el));
+
+/* ───── NAV ACTIVE STATE ───── */
+const sections = document.querySelectorAll('section[id]');
+const navLinks = document.querySelectorAll('.na a');
+const navIO = new IntersectionObserver((entries)=>{
+  entries.forEach(e=>{
+    if(e.isIntersecting){
+      navLinks.forEach(l=>l.classList.remove('on'));
+      const active = document.querySelector(`.na a[href="#${e.target.id}"]`);
+      if(active) active.classList.add('on');
+    }
+  });
+},{threshold:.4,rootMargin:'-52px 0px 0px 0px'});
+sections.forEach(s=>navIO.observe(s));
+
+/* ───── SFX TOAST ───── */
+const sfxWords = ['WHOOSH!','ZOOM!','CLICK!','ZAPP!','BOOM!','FLASH!'];
+const toast = document.getElementById('sfx-toast');
+let toastTimeout;
+function showSFX(x,y){
+  clearTimeout(toastTimeout);
+  toast.textContent = sfxWords[Math.floor(Math.random()*sfxWords.length)];
+  toast.style.left = x+'px';
+  toast.style.top  = y+'px';
+  const h = ['var(--gold)','var(--red)','var(--teal)','var(--cream)'];
+  toast.style.color = h[Math.floor(Math.random()*h.length)];
+  toast.classList.add('pop');
+  toastTimeout = setTimeout(()=>toast.classList.remove('pop'),700);
+}
+document.addEventListener('click',e=>showSFX(e.clientX-60,e.clientY-60));
+
+/* ───── CONTACT FORM ───── */
+function handleContact(e){
+  e.preventDefault();
+  const name  = document.getElementById('cf-name').value;
+  const email = document.getElementById('cf-email').value;
+  const msg   = document.getElementById('cf-msg').value;
+  window.location.href =
+    `mailto:rohitsanjupatil.rsp10@gmail.com?subject=Portfolio Contact from ${encodeURIComponent(name)}&body=${encodeURIComponent(msg+'\n\nFrom: '+email)}`;
+}
+</script>
+</body>
+</html>
