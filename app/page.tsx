@@ -430,21 +430,39 @@ rsp_core.boot()
                     </span>
                   ))}
                 </div>
-                <a
-                  href="https://github.com/JediScout10/FinShield"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-block px-8 py-3 font-mono tracking-widest hover:brightness-110 active:scale-95 transition-all"
-                  style={{
-                    background: "#F5C842",
-                    color: "#0e0e0e",
-                    fontFamily: "Bebas Neue, sans-serif",
-                    fontSize: "1.1rem",
-                    letterSpacing: "0.2em",
-                  }}
-                >
-                  DECRYPT_AND_VIEW
-                </a>
+                <div className="flex flex-wrap gap-4">
+                  <a
+                    href="https://github.com/JediScout10/FinShield"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-block px-8 py-3 font-mono tracking-widest hover:brightness-110 active:scale-95 transition-all"
+                    style={{
+                      background: "transparent",
+                      border: "1px solid #F5C842",
+                      color: "#F5C842",
+                      fontFamily: "Bebas Neue, sans-serif",
+                      fontSize: "1.1rem",
+                      letterSpacing: "0.2em",
+                    }}
+                  >
+                    SOURCE_CODE
+                  </a>
+                  <a
+                    href="https://finshield-j66s.onrender.com/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-block px-8 py-3 font-mono tracking-widest hover:brightness-110 active:scale-95 transition-all"
+                    style={{
+                      background: "#F5C842",
+                      color: "#0e0e0e",
+                      fontFamily: "Bebas Neue, sans-serif",
+                      fontSize: "1.1rem",
+                      letterSpacing: "0.2em",
+                    }}
+                  >
+                    LIVE_SYSTEM
+                  </a>
+                </div>
               </div>
               {/* Placeholder visual */}
               <div
@@ -482,7 +500,7 @@ rsp_core.boot()
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             {/* Card 1 */}
             <div
-              className="project-card group p-6 border transition-all duration-300 reveal reveal-delay-1"
+              className="project-card group p-6 border transition-all duration-300 reveal reveal-delay-1 flex flex-col h-full"
               style={{
                 background: "#2a2a2a",
                 borderColor: "rgba(59,74,69,0.2)",
@@ -503,8 +521,8 @@ rsp_core.boot()
                 VC INTELLIGENCE INTERFACE
               </h4>
               <p
-                className="text-[14px] leading-snug mb-6 overflow-hidden"
-                style={{ color: "#A0A0A0", height: "3rem" }}
+                className="text-[14px] leading-snug mb-6 flex-grow"
+                style={{ color: "#A0A0A0" }}
               >
                 AI-driven venture intelligence system for startup discovery, signal scoring,
                 and structured research pipelines.
@@ -524,28 +542,47 @@ rsp_core.boot()
                   </span>
                 ))}
               </div>
-              <a
-                href="https://github.com/JediScout10/vc-intelligence-interface"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="block w-full py-2 text-center font-mono text-[10px] uppercase tracking-widest border transition-all"
-                style={{ borderColor: "rgba(245,200,66,0.3)", color: "#F5C842" }}
-                onMouseEnter={(e) => {
-                  (e.target as HTMLAnchorElement).style.background = "#F5C842";
-                  (e.target as HTMLAnchorElement).style.color = "#0e0e0e";
-                }}
-                onMouseLeave={(e) => {
-                  (e.target as HTMLAnchorElement).style.background = "transparent";
-                  (e.target as HTMLAnchorElement).style.color = "#F5C842";
-                }}
-              >
-                OPEN_SYSTEM
-              </a>
+              <div className="mt-auto flex flex-col gap-2">
+                <a
+                  href="https://github.com/JediScout10/vc-intelligence-interface"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="block w-full py-2 text-center font-mono text-[10px] uppercase tracking-widest border transition-all"
+                  style={{ borderColor: "rgba(245,200,66,0.3)", color: "#F5C842" }}
+                  onMouseEnter={(e) => {
+                    (e.target as HTMLAnchorElement).style.background = "#F5C842";
+                    (e.target as HTMLAnchorElement).style.color = "#0e0e0e";
+                  }}
+                  onMouseLeave={(e) => {
+                    (e.target as HTMLAnchorElement).style.background = "transparent";
+                    (e.target as HTMLAnchorElement).style.color = "#F5C842";
+                  }}
+                >
+                  CODE
+                </a>
+                <a
+                  href="https://vc-intelligence-interface-beryl.vercel.app/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="block w-full py-2 text-center font-mono text-[10px] uppercase tracking-widest border transition-all"
+                  style={{ background: "#F5C842", borderColor: "rgba(245,200,66,0.3)", color: "#0e0e0e" }}
+                  onMouseEnter={(e) => {
+                    (e.target as HTMLAnchorElement).style.background = "transparent";
+                    (e.target as HTMLAnchorElement).style.color = "#F5C842";
+                  }}
+                  onMouseLeave={(e) => {
+                    (e.target as HTMLAnchorElement).style.background = "#F5C842";
+                    (e.target as HTMLAnchorElement).style.color = "#0e0e0e";
+                  }}
+                >
+                  LIVE
+                </a>
+              </div>
             </div>
 
             {/* Card 2 */}
             <div
-              className="project-card group p-6 border transition-all duration-300 reveal reveal-delay-2"
+              className="project-card group p-6 border transition-all duration-300 reveal reveal-delay-2 flex flex-col h-full"
               style={{
                 background: "#2a2a2a",
                 borderColor: "rgba(59,74,69,0.2)",
@@ -566,8 +603,8 @@ rsp_core.boot()
                 CARECONNECT
               </h4>
               <p
-                className="text-[14px] leading-snug mb-6 overflow-hidden"
-                style={{ color: "#A0A0A0", height: "3rem" }}
+                className="text-[14px] leading-snug mb-6 flex-grow"
+                style={{ color: "#A0A0A0" }}
               >
                 Mental health assistance platform with structured workflows,
                 secure backend services, and data persistence.
@@ -587,28 +624,30 @@ rsp_core.boot()
                   </span>
                 ))}
               </div>
-              <a
-                href="https://github.com/JediScout10/CareConnect"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="block w-full py-2 text-center font-mono text-[10px] uppercase tracking-widest border transition-all"
-                style={{ borderColor: "rgba(245,200,66,0.3)", color: "#F5C842" }}
-                onMouseEnter={(e) => {
-                  (e.target as HTMLAnchorElement).style.background = "#F5C842";
-                  (e.target as HTMLAnchorElement).style.color = "#0e0e0e";
-                }}
-                onMouseLeave={(e) => {
-                  (e.target as HTMLAnchorElement).style.background = "transparent";
-                  (e.target as HTMLAnchorElement).style.color = "#F5C842";
-                }}
-              >
-                OPEN_SYSTEM
-              </a>
+              <div className="mt-auto">
+                <a
+                  href="https://github.com/JediScout10/CareConnect"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="block w-full py-2 text-center font-mono text-[10px] uppercase tracking-widest border transition-all"
+                  style={{ borderColor: "rgba(245,200,66,0.3)", color: "#F5C842" }}
+                  onMouseEnter={(e) => {
+                    (e.target as HTMLAnchorElement).style.background = "#F5C842";
+                    (e.target as HTMLAnchorElement).style.color = "#0e0e0e";
+                  }}
+                  onMouseLeave={(e) => {
+                    (e.target as HTMLAnchorElement).style.background = "transparent";
+                    (e.target as HTMLAnchorElement).style.color = "#F5C842";
+                  }}
+                >
+                  OPEN_SYSTEM
+                </a>
+              </div>
             </div>
 
             {/* Card 3 */}
             <div
-              className="project-card group p-6 border transition-all duration-300 reveal reveal-delay-3"
+              className="project-card group p-6 border transition-all duration-300 reveal reveal-delay-3 flex flex-col h-full"
               style={{
                 background: "#2a2a2a",
                 borderColor: "rgba(59,74,69,0.2)",
@@ -629,8 +668,8 @@ rsp_core.boot()
                 DEVSECOPS CI/CD PIPELINE
               </h4>
               <p
-                className="text-[14px] leading-snug mb-6 overflow-hidden"
-                style={{ color: "#A0A0A0", height: "3rem" }}
+                className="text-[14px] leading-snug mb-6 flex-grow"
+                style={{ color: "#A0A0A0" }}
               >
                 Secure CI/CD workflow enforcing automated security validation,
                 static code analysis, dependency scanning, and container checks.
@@ -650,23 +689,25 @@ rsp_core.boot()
                   </span>
                 ))}
               </div>
-              <a
-                href="https://github.com/JediScout10"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="block w-full py-2 text-center font-mono text-[10px] uppercase tracking-widest border transition-all"
-                style={{ borderColor: "rgba(245,200,66,0.3)", color: "#F5C842" }}
-                onMouseEnter={(e) => {
-                  (e.target as HTMLAnchorElement).style.background = "#F5C842";
-                  (e.target as HTMLAnchorElement).style.color = "#0e0e0e";
-                }}
-                onMouseLeave={(e) => {
-                  (e.target as HTMLAnchorElement).style.background = "transparent";
-                  (e.target as HTMLAnchorElement).style.color = "#F5C842";
-                }}
-              >
-                ACCESS_MODULE
-              </a>
+              <div className="mt-auto">
+                <a
+                  href="https://github.com/JediScout10"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="block w-full py-2 text-center font-mono text-[10px] uppercase tracking-widest border transition-all"
+                  style={{ borderColor: "rgba(245,200,66,0.3)", color: "#F5C842" }}
+                  onMouseEnter={(e) => {
+                    (e.target as HTMLAnchorElement).style.background = "#F5C842";
+                    (e.target as HTMLAnchorElement).style.color = "#0e0e0e";
+                  }}
+                  onMouseLeave={(e) => {
+                    (e.target as HTMLAnchorElement).style.background = "transparent";
+                    (e.target as HTMLAnchorElement).style.color = "#F5C842";
+                  }}
+                >
+                  ACCESS_MODULE
+                </a>
+              </div>
             </div>
           </div>
         </section>
