@@ -1,43 +1,36 @@
 import { useEffect, useRef, useState } from 'react';
-import { poseMap } from './characterDialogue';
+import { poseMap, SECTION_IDS } from './characterDialogue';
 
-const SECTION_IDS = ['hero', 'about', 'skills', 'projects', 'certs', 'contact'];
+const ALLOWED_SECTIONS = ['hero', 'stack', 'work', 'contact'];
 
 export function useCharacterGuide() {
-  const currentX = useRef(0);
-  const targetX = useRef(0);
-  const flipDirection = useRef(1); // 1 for right, -1 for left
-  const currentPose = useRef('idle');
-  
-  const activeSectionRef = useRef('hero');
-  const arrivedSectionRef = useRef('');
-  
-  // State only used to trigger the speech bubble re-render once arrived
+  const currentPose   = useRef('idle');
+  const activeSectionRef   = useRef('hero');
   const [arrivedSection, setArrivedSection] = useState<string>('');
 
+  // ── Intersection observer: update pose and dialogue instantly ──────
   useEffect(() => {
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            const id = entry.target.id;
-            activeSectionRef.current = id;
-            
-            const index = SECTION_IDS.indexOf(id);
-            const total = SECTION_IDS.length;
-            const percentage = total > 1 ? index / (total - 1) : 0.5;
-            
-            const screenW = window.innerWidth;
-            const characterWidth = 120;
-            const padding = 20;
-            const minX = padding;
-            const maxX = screenW - characterWidth - padding;
-            
-            targetX.current = minX + percentage * (maxX - minX);
-          }
+          if (!entry.isIntersecting) return;
+          const id = entry.target.id;
+
+          if (activeSectionRef.current === id) return;
+          if (!ALLOWED_SECTIONS.includes(id)) return;
+
+          activeSectionRef.current = id;
+          
+          // Instantly update pose mapping and trigger dialogue
+          currentPose.current = poseMap[id] || 'talk';
+          
+          setArrivedSection(''); // Refresh re-render mechanism for bubble
+          setTimeout(() => {
+            setArrivedSection(id);
+          }, 50); // slight ms gap helps state refresh bubble
         });
       },
-      { threshold: 0.5 } // Trigger when 50% of the section is visible
+      { threshold: 0.4, rootMargin: '-60px 0px 0px 0px' }
     );
 
     SECTION_IDS.forEach((id) => {
@@ -45,54 +38,24 @@ export function useCharacterGuide() {
       if (el) observer.observe(el);
     });
 
-    // Fix 2: Initial hero greeting on first load
-    const timer = setTimeout(() => {
-      if (arrivedSectionRef.current === '') {
-        arrivedSectionRef.current = 'hero';
+    const helloTimer = setTimeout(() => {
+      if (activeSectionRef.current === 'hero') {
+        currentPose.current = poseMap['hero'] || 'wave';
         setArrivedSection('hero');
       }
-    }, 1200);
+    }, 1000);
 
     return () => {
       observer.disconnect();
-      clearTimeout(timer);
+      clearTimeout(helloTimer);
     };
   }, []);
 
-  useEffect(() => {
-    let animationFrameId: number;
-
-    const animate = () => {
-      const dx = targetX.current - currentX.current;
-      const velocity = Math.abs(dx);
-      
-      if (velocity > 1) {
-        // Moving state
-        currentX.current += dx * 0.03; // Lerp
-        flipDirection.current = dx > 0 ? 1 : -1;
-        currentPose.current = 'walk';
-        
-        if (arrivedSectionRef.current !== '') {
-          arrivedSectionRef.current = '';
-          setArrivedSection('');
-        }
-      } else {
-        // Arrived state
-        currentX.current = targetX.current;
-        currentPose.current = poseMap[activeSectionRef.current] || 'idle';
-        
-        if (arrivedSectionRef.current !== activeSectionRef.current) {
-          arrivedSectionRef.current = activeSectionRef.current;
-          setArrivedSection(activeSectionRef.current);
-        }
-      }
-
-      animationFrameId = requestAnimationFrame(animate);
-    };
-
-    animationFrameId = requestAnimationFrame(animate);
-    return () => cancelAnimationFrame(animationFrameId);
-  }, []);
-
-  return { currentX, currentPose, flipDirection, arrivedSection };
+  return { 
+    currentPose, 
+    arrivedSection, 
+    // Return dummy values for unused moving physics
+    isMoving: { current: false }, 
+    flipDirection: { current: -1 } 
+  };
 }

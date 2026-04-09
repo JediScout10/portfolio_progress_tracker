@@ -4,135 +4,183 @@ import React, { useEffect, useRef, useState } from 'react';
 import { useCharacterGuide } from './useCharacterGuide';
 import { dialogueMap, poseImages } from './characterDialogue';
 
-export default function CharacterGuide() {
-  const { currentX, currentPose, flipDirection, arrivedSection } = useCharacterGuide();
-  
-  const characterRef = useRef<HTMLDivElement>(null);
-  const imgRef = useRef<HTMLImageElement>(null);
-  
-  const [displayedText, setDisplayedText] = useState("");
-  const [showBubble, setShowBubble] = useState(false);
+// ── Idle float: 2–3px vertical sine wave ─────────────────────────────────────
+// ── Idle float: 2px vertical sine wave ─────────────────────────────────────
+const FLOAT_AMPLITUDE = 2;     // px
+const FLOAT_SPEED     = 0.0018; // radians per ms
 
-  // Sync DOM with Refs avoiding React re-renders for smooth movement
+export default function CharacterGuide() {
+  const { currentX, currentPose, flipDirection, arrivedSection, isMoving } = useCharacterGuide();
+
+  const containerRef  = useRef<HTMLDivElement>(null);
+  const imgRef        = useRef<HTMLImageElement>(null);
+  const floatRef      = useRef(0); // current float Y offset
+
+  // Dialogue state — only updated on arrival, not per frame
+  const [displayedText, setDisplayedText] = useState('');
+  const [showBubble,    setShowBubble]    = useState(false);
+  const [bubbleLeft,    setBubbleLeft]    = useState(false); // false = bubble opens left (inwards)
+
+  // ── RAF: sync position + idle float + pose ──────────────────────────────────
   useEffect(() => {
-    let animationFrameId: number;
-    const syncDOM = () => {
-      if (characterRef.current) {
-        characterRef.current.style.transform = `translateX(${currentX.current}px)`;
+    let rafId: number;
+    let lastTime = performance.now();
+
+    const loop = (now: number) => {
+      const dt = now - lastTime;
+      lastTime = now;
+
+      // Float sine
+      floatRef.current += FLOAT_SPEED * dt;
+      const floatY = !isMoving.current ? Math.sin(floatRef.current) * FLOAT_AMPLITUDE : 0;
+
+      if (containerRef.current) {
+        containerRef.current.style.transform = `translateY(${floatY}px)`;
       }
+
       if (imgRef.current) {
-        const newSrc = poseImages[currentPose.current] || poseImages.idle;
-        if (imgRef.current.getAttribute('data-pose') !== currentPose.current) {
-          imgRef.current.src = newSrc;
-          imgRef.current.setAttribute('data-pose', currentPose.current);
+        const pose   = currentPose.current;
+        const newSrc = poseImages[pose] || poseImages.idle;
+        const prevPose = imgRef.current.getAttribute('data-pose');
+
+        if (prevPose !== pose) {
+          // Crossfade — opacity drop then swap
+          imgRef.current.style.opacity = '0';
+          setTimeout(() => {
+            if (imgRef.current) {
+              imgRef.current.src = newSrc;
+              imgRef.current.setAttribute('data-pose', pose);
+              imgRef.current.style.opacity = '1';
+            }
+          }, 200);
         }
+
+        // Horizontal flip based on movement direction
         imgRef.current.style.transform = `scaleX(${flipDirection.current})`;
       }
-      animationFrameId = requestAnimationFrame(syncDOM);
+
+      rafId = requestAnimationFrame(loop);
     };
-    
-    animationFrameId = requestAnimationFrame(syncDOM);
-    return () => cancelAnimationFrame(animationFrameId);
+
+    rafId = requestAnimationFrame(loop);
+    return () => cancelAnimationFrame(rafId);
   }, [currentX, currentPose, flipDirection]);
 
-  // Dialogue typing animation
+  // ── Dialogue: starts only after arrivedSection fires ───────────────────────
   useEffect(() => {
     if (!arrivedSection) {
       setShowBubble(false);
-      setDisplayedText("");
+      setDisplayedText('');
       return;
     }
 
     const fullText = dialogueMap[arrivedSection];
     if (!fullText) return;
 
+    // Reset
+    setDisplayedText('');
     setShowBubble(true);
+
+    // Typing effect — instant reveal, no flicker
     let i = 0;
-    setDisplayedText("");
-
-    const typingInterval = setInterval(() => {
-      setDisplayedText(fullText.substring(0, i + 1));
+    const interval = setInterval(() => {
       i++;
-      if (i >= fullText.length) {
-        clearInterval(typingInterval);
-      }
-    }, 50);
+      setDisplayedText(fullText.slice(0, i));
+      if (i >= fullText.length) clearInterval(interval);
+    }, 28);
 
-    const hideTimeout = setTimeout(() => {
-      setShowBubble(false);
-    }, 4000 + (fullText.length * 50));
+    // Auto-hide after reading time (min 4s + typing time)
+    const readTime  = Math.max(4000, fullText.length * 60);
+    const hideTimer = setTimeout(() => setShowBubble(false), readTime);
 
     return () => {
-      clearInterval(typingInterval);
-      clearTimeout(hideTimeout);
+      clearInterval(interval);
+      clearTimeout(hideTimer);
     };
   }, [arrivedSection]);
 
-  // Fix 1: Dynamically determine bubble alignment based on character's X position
-  const bubbleAlign = typeof window !== 'undefined' && currentX.current > window.innerWidth * 0.6 ? 'right' : 'left';
-
   return (
-    <div 
-      ref={characterRef}
+    <div
+      ref={containerRef}
       style={{
-        position: 'fixed',
-        bottom: '0',
-        left: '0',
-        zIndex: 50,
-        width: '120px',
+        position:      'fixed',
+        bottom:        '40px',
+        right:         '24px',
+        zIndex:        50,
+        width:         '120px',
         pointerEvents: 'none',
-        display: 'flex',
+        display:       'flex',
         flexDirection: 'column',
-        alignItems: 'center',
-        willChange: 'transform'
+        alignItems:    'center',
+        willChange:    'transform',
       }}
     >
+      {/* ── Speech Bubble ───────────────────────────────────────────────── */}
       {showBubble && (
-        <div 
+        <div
           style={{
-            position: 'absolute',
-            bottom: '100%',
-            marginBottom: '20px',
-            backgroundColor: 'rgba(15, 23, 42, 0.95)',
-            color: '#00ffcc',
-            padding: '12px 16px',
-            borderRadius: '8px',
-            border: '1px solid #00ffcc',
-            boxShadow: '0 0 15px rgba(0, 255, 204, 0.3)',
-            fontFamily: 'monospace',
-            fontSize: '14px',
-            lineHeight: '1.4',
-            whiteSpace: 'pre-wrap',
-            width: 'max-content',
-            maxWidth: '250px',
-            textAlign: 'left',
-            left: bubbleAlign === 'left' ? '0' : 'auto',
-            right: bubbleAlign === 'right' ? '0' : 'auto',
+            position:        'absolute',
+            bottom:          '100%',
+            marginBottom:    '12px',
+            // Monolith palette
+            background:      '#1c1b1b',
+            border:          '1px solid rgba(245,200,66,0.3)',
+            color:           '#e5e2e1',
+            boxShadow:       '0 10px 30px rgba(0,0,0,0.4)',
+            borderRadius:    '6px',
+            padding:         '12px 14px',
+            fontFamily:      'monospace',
+            fontSize:        '13px',
+            lineHeight:      '1.5',
+            whiteSpace:      'pre-wrap',
+            width:           'max-content',
+            maxWidth:        '240px',
+            // Auto flip: open toward center of screen
+            left:  bubbleLeft ? '0'    : 'auto',
+            right: bubbleLeft ? 'auto' : '0',
+            // Keep inside viewport with margin
+            marginLeft: bubbleLeft ? '0' : undefined,
+            minWidth:   '160px',
           }}
         >
-          {displayedText}
+          {/* Accent top bar */}
           <div style={{
-            position: 'absolute',
-            bottom: '-6px',
-            left: bubbleAlign === 'left' ? '45px' : 'auto',
-            right: bubbleAlign === 'right' ? '45px' : 'auto',
-            borderWidth: '6px 6px 0',
-            borderStyle: 'solid',
-            borderColor: '#00ffcc transparent transparent transparent'
-          }}></div>
+            height:     '2px',
+            background: 'rgba(245,200,66,0.4)',
+            marginBottom: '8px',
+            borderRadius: '2px',
+          }} />
+
+          {displayedText}
+
+          {/* Tail pointer */}
+          <div style={{
+            position:    'absolute',
+            bottom:      '-7px',
+            left:        bubbleLeft ? '24px' : 'auto',
+            right:       bubbleLeft ? 'auto' : '24px',
+            width:       0,
+            height:      0,
+            borderLeft:  '7px solid transparent',
+            borderRight: '7px solid transparent',
+            borderTop:   '7px solid rgba(245,200,66,0.3)',
+          }} />
         </div>
       )}
-      
-      <img 
+
+      {/* ── Character Sprite ────────────────────────────────────────────── */}
+      <img
         ref={imgRef}
         src="/static/character_idle.png"
+        data-pose="idle"
         alt="Portfolio Guide"
         style={{
-          width: '120px',
-          height: '200px',
-          objectFit: 'contain',
+          width:           '120px',
+          height:          '200px',
+          objectFit:       'contain',
           transformOrigin: 'center bottom',
-          transition: 'transform 0.1s linear'
+          // Opacity transition for crossfade on pose change
+          transition:      'opacity 0.2s ease, transform 0.1s linear',
         }}
       />
     </div>

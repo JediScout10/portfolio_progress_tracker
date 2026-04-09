@@ -3,46 +3,16 @@
 import React, { useState, useEffect, useRef, FormEvent } from "react";
 import CharacterGuide from "./components/Character/CharacterGuide";
 
-/* ─── INTERNSHIP DATA ─── */
-const INTERNSHIPS = [
-  {
-    icon: "router",
-    iconColorHex: "#2dd4bf",
-    bgColorStyle: "rgba(45,212,191,0.08)",
-    providerColorHex: "#2dd4bf",
-    title: "NETWORK SECURITY ASSOCIATES",
-    desc: "Enterprise network security and infrastructure protection.",
-    provider: "CISCO",
-    year: "2024",
-  },
+/* ─── CERTIFICATION DATA ─── */
+const CERTIFICATIONS = [
   {
     icon: "security",
     iconColorHex: "#f87171",
     bgColorStyle: "rgba(248,113,113,0.08)",
     providerColorHex: "#f87171",
     title: "CYBERSECURITY VIRTUAL INTERNSHIP",
-    desc: "Advanced threat detection and incident response protocols.",
-    provider: "PALO ALTO",
-    year: "2024",
-  },
-  {
-    icon: "hub",
-    iconColorHex: "#60a5fa",
-    bgColorStyle: "rgba(96,165,250,0.08)",
-    providerColorHex: "#60a5fa",
-    title: "CCNA JUNOS CERTIFICATION",
-    desc: "Enterprise networking routing and switching fundamentals.",
-    provider: "JUNIPER",
-    year: "NOV 2023",
-  },
-  {
-    icon: "android",
-    iconColorHex: "#4ade80",
-    bgColorStyle: "rgba(74,222,128,0.08)",
-    providerColorHex: "#4ade80",
-    title: "ANDROID DEVELOPER VIRTUAL INTERNSHIP",
-    desc: "Mobile application development with Android SDK and Jetpack.",
-    provider: "GOOGLE",
+    desc: "Advanced threat detection, incident response, and network defense.",
+    provider: "PALO ALTO NETWORKS",
     year: "2024",
   },
   {
@@ -51,20 +21,39 @@ const INTERNSHIPS = [
     bgColorStyle: "rgba(251,146,60,0.08)",
     providerColorHex: "#fb923c",
     title: "AI-ML VIRTUAL INTERNSHIP",
-    desc: "Applied machine learning and AI models on real datasets.",
-    provider: "AWS ACADEMY",
+    desc: "Applied machine learning and AI pipelines on real-world datasets.",
+    provider: "GOOGLE",
     year: "2024",
   },
   {
-    icon: "emoji_events",
-    iconColorHex: "#F5C842",
-    bgColorStyle: "rgba(245,200,66,0.1)",
-    providerColorHex: "#F5C842",
-    title: "HACKBLITZ TECHSPRINT WINNER",
-    desc: "First place — competitive hackathon across security and AI tracks.",
-    provider: "HACKBLITZ",
-    year: "2026",
-    isWinner: true,
+    icon: "android",
+    iconColorHex: "#4ade80",
+    bgColorStyle: "rgba(74,222,128,0.08)",
+    providerColorHex: "#4ade80",
+    title: "ANDROID DEVELOPER VIRTUAL INTERNSHIP",
+    desc: "Mobile application development with Android SDK and Jetpack Compose.",
+    provider: "GOOGLE",
+    year: "2024",
+  },
+  {
+    icon: "hub",
+    iconColorHex: "#2dd4bf",
+    bgColorStyle: "rgba(45,212,191,0.08)",
+    providerColorHex: "#2dd4bf",
+    title: "NETWORKING VIRTUAL INTERNSHIP",
+    desc: "Enterprise routing, switching, and network infrastructure fundamentals.",
+    provider: "JUNIPER NETWORKS",
+    year: "2024",
+  },
+  {
+    icon: "storage",
+    iconColorHex: "#60a5fa",
+    bgColorStyle: "rgba(96,165,250,0.08)",
+    providerColorHex: "#60a5fa",
+    title: "DATA ENGINEERING VIRTUAL INTERNSHIP",
+    desc: "Cloud data pipelines, ETL workflows, and scalable data infrastructure.",
+    provider: "AWS ACADEMY",
+    year: "2024",
   },
 ];
 
@@ -423,12 +412,11 @@ rsp_core.boot()
                   className="text-sm leading-relaxed mb-8 max-w-md"
                   style={{ color: "#A0A0A0" }}
                 >
-                  A neural network-based financial protection suite capable of
-                  identifying fraudulent patterns in real-time with 99.8% accuracy.
-                  Built for high-frequency banking throughput.
+                  Machine learning fraud detection system with risk scoring, REST API backend,
+                  anomaly detection, and production-ready architecture.
                 </p>
                 <div className="flex flex-wrap gap-2 mb-8">
-                  {["PYTHON", "FASTAPI", "SCIKIT-LEARN", "FIREBASE"].map((t) => (
+                  {["PYTHON", "FASTAPI", "SCIKIT-LEARN", "FEATURE ENGINEERING"].map((t) => (
                     <span
                       key={t}
                       className="font-mono text-[10px] px-2 py-1 border"
@@ -443,7 +431,7 @@ rsp_core.boot()
                   ))}
                 </div>
                 <a
-                  href="https://exekillers-hackwins2026.onrender.com/"
+                  href="https://github.com/JediScout10/FinShield"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="inline-block px-8 py-3 font-mono tracking-widest hover:brightness-110 active:scale-95 transition-all"
@@ -490,7 +478,7 @@ rsp_core.boot()
             </div>
           </div>
 
-          {/* 4-card grid */}
+          {/* 3-card grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             {/* Card 1 */}
             <div
@@ -502,27 +490,27 @@ rsp_core.boot()
             >
               <div className="flex justify-between items-start mb-6">
                 <span className="material-symbols-outlined" style={{ color: "#F5C842" }}>
-                  monitoring
+                  psychology
                 </span>
                 <span className="font-mono text-[9px]" style={{ color: "#6b7280" }}>
-                  ID: PRJ-044
+                  ID: PRJ-012
                 </span>
               </div>
               <h4
                 className="text-2xl mb-3 tracking-wide"
                 style={{ fontFamily: "Bebas Neue, sans-serif", color: "#e5e2e1" }}
               >
-                PROGRESS TRACKER
+                VC INTELLIGENCE INTERFACE
               </h4>
               <p
                 className="text-[14px] leading-snug mb-6 overflow-hidden"
                 style={{ color: "#A0A0A0", height: "3rem" }}
               >
-                Serverless discipline system with secure data isolation and row-level
-                security.
+                AI-driven venture intelligence system for startup discovery, signal scoring,
+                and structured research pipelines.
               </p>
               <div className="flex flex-wrap gap-2 mb-8">
-                {["NEXT.JS", "SUPABASE", "TYPESCRIPT"].map((t) => (
+                {["NEXT.JS", "TYPESCRIPT", "REACT", "AI INTEGRATION"].map((t) => (
                   <span
                     key={t}
                     className="font-mono text-[9px] px-2 py-0.5 border"
@@ -536,20 +524,23 @@ rsp_core.boot()
                   </span>
                 ))}
               </div>
-              <button
-                className="w-full py-2 font-mono text-[10px] uppercase tracking-widest border transition-all hover:text-[#0e0e0e]"
+              <a
+                href="https://github.com/JediScout10/vc-intelligence-interface"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="block w-full py-2 text-center font-mono text-[10px] uppercase tracking-widest border transition-all"
                 style={{ borderColor: "rgba(245,200,66,0.3)", color: "#F5C842" }}
                 onMouseEnter={(e) => {
-                  (e.target as HTMLButtonElement).style.background = "#F5C842";
-                  (e.target as HTMLButtonElement).style.color = "#0e0e0e";
+                  (e.target as HTMLAnchorElement).style.background = "#F5C842";
+                  (e.target as HTMLAnchorElement).style.color = "#0e0e0e";
                 }}
                 onMouseLeave={(e) => {
-                  (e.target as HTMLButtonElement).style.background = "transparent";
-                  (e.target as HTMLButtonElement).style.color = "#F5C842";
+                  (e.target as HTMLAnchorElement).style.background = "transparent";
+                  (e.target as HTMLAnchorElement).style.color = "#F5C842";
                 }}
               >
-                INIT_PREVIEW
-              </button>
+                OPEN_SYSTEM
+              </a>
             </div>
 
             {/* Card 2 */}
@@ -578,8 +569,8 @@ rsp_core.boot()
                 className="text-[14px] leading-snug mb-6 overflow-hidden"
                 style={{ color: "#A0A0A0", height: "3rem" }}
               >
-                Mental health platform with AI-powered assessments and structured
-                clinical insights.
+                Mental health assistance platform with structured workflows,
+                secure backend services, and data persistence.
               </p>
               <div className="flex flex-wrap gap-2 mb-8">
                 {["DJANGO", "PYTHON", "POSTGRESQL"].map((t) => (
@@ -597,7 +588,7 @@ rsp_core.boot()
                 ))}
               </div>
               <a
-                href="https://github.com/JediScout10"
+                href="https://github.com/JediScout10/CareConnect"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="block w-full py-2 text-center font-mono text-[10px] uppercase tracking-widest border transition-all"
@@ -635,17 +626,17 @@ rsp_core.boot()
                 className="text-2xl mb-3 tracking-wide"
                 style={{ fontFamily: "Bebas Neue, sans-serif", color: "#e5e2e1" }}
               >
-                SECURE AUTH
+                DEVSECOPS CI/CD PIPELINE
               </h4>
               <p
                 className="text-[14px] leading-snug mb-6 overflow-hidden"
                 style={{ color: "#A0A0A0", height: "3rem" }}
               >
-                JWT auth with refresh rotation, device fingerprinting, and
-                brute-force protection.
+                Secure CI/CD workflow enforcing automated security validation,
+                static code analysis, dependency scanning, and container checks.
               </p>
               <div className="flex flex-wrap gap-2 mb-8">
-                {["FASTAPI", "JWT", "REDIS"].map((t) => (
+                {["DOCKER", "GITHUB ACTIONS", "DEVSECOPS", "CI/CD SECURITY"].map((t) => (
                   <span
                     key={t}
                     className="font-mono text-[9px] px-2 py-0.5 border"
@@ -675,74 +666,6 @@ rsp_core.boot()
                 }}
               >
                 ACCESS_MODULE
-              </a>
-            </div>
-
-            {/* Card 4 — THE FORGE (locked, but accessible for Rohit) */}
-            <div
-              id="forge-card"
-              className="project-card group p-6 border transition-all duration-300 reveal reveal-delay-4"
-              style={{
-                background: "#2a2a2a",
-                borderColor: "rgba(245,200,66,0.4)",
-              }}
-            >
-              <div className="flex justify-between items-start mb-6">
-                <span className="material-symbols-outlined" style={{ color: "#F5C842" }}>
-                  lock
-                </span>
-                <span className="font-mono text-[9px]" style={{ color: "#6b7280" }}>
-                  ID: PRJ-999
-                </span>
-              </div>
-              <h4
-                className="text-2xl mb-3 tracking-wide"
-                style={{ fontFamily: "Bebas Neue, sans-serif", color: "#e5e2e1" }}
-              >
-                THE FORGE — Private System
-              </h4>
-              <p
-                className="text-[14px] leading-snug mb-6 overflow-hidden"
-                style={{ color: "#A0A0A0", height: "3rem" }}
-              >
-                Personal execution dashboard. Supabase + Next.js + PostgreSQL.
-              </p>
-              <div className="flex flex-wrap gap-2 mb-8">
-                {["SUPABASE", "NEXT.JS", "RLS"].map((t) => (
-                  <span
-                    key={t}
-                    className="font-mono text-[9px] px-2 py-0.5 border"
-                    style={{
-                      background: "#131313",
-                      color: "#bacac4",
-                      borderColor: "rgba(59,74,69,0.1)",
-                    }}
-                  >
-                    {t}
-                  </span>
-                ))}
-              </div>
-              {/* CLASSIFIED button — goes to /login for auth-gated access */}
-              <a
-                href="/login"
-                className="w-full py-2 flex items-center justify-center gap-2 font-mono text-[10px] uppercase tracking-widest border transition-all cursor-pointer"
-                style={{
-                  borderColor: "rgba(245,200,66,0.5)",
-                  color: "#F5C842",
-                }}
-                onMouseEnter={(e) => {
-                  const el = e.currentTarget as HTMLElement;
-                  el.style.background = "rgba(245,200,66,0.1)";
-                }}
-                onMouseLeave={(e) => {
-                  const el = e.currentTarget as HTMLElement;
-                  el.style.background = "transparent";
-                }}
-              >
-                CLASSIFIED_
-                <span className="material-symbols-outlined text-xs" style={{ fontSize: "14px" }}>
-                  lock
-                </span>
               </a>
             </div>
           </div>
@@ -795,57 +718,23 @@ rsp_core.boot()
             {/* CERTIFICATIONS TAB */}
             {activeTab === "certs" && (
               <div className="space-y-6">
-                {[
-                  {
-                    icon: "cloud",
-                    iconColor: "#3b82f6",
-                    borderColor: "rgba(59,130,246,0.2)",
-                    bgColor: "rgba(59,130,246,0.1)",
-                    title: "GOOGLE CLOUD ARCHITECT",
-                    desc: "Professional Certification — Advanced Infrastructure & Data",
-                    provider: "GOOGLE",
-                    providerColor: "#3b82f6",
-                    valid: "2026",
-                  },
-                  {
-                    icon: "dns",
-                    iconColor: "#f97316",
-                    borderColor: "rgba(249,115,22,0.2)",
-                    bgColor: "rgba(249,115,22,0.1)",
-                    title: "AWS SECURITY SPECIALTY",
-                    desc: "Focus on encryption, identity, and incident response.",
-                    provider: "AMAZON",
-                    providerColor: "#f97316",
-                    valid: "2025",
-                  },
-                  {
-                    icon: "router",
-                    iconColor: "#14b8a6",
-                    borderColor: "rgba(20,184,166,0.2)",
-                    bgColor: "rgba(20,184,166,0.1)",
-                    title: "CISCO CCNA NETWORK",
-                    desc: "Enterprise networking routing and switching core.",
-                    provider: "CISCO",
-                    providerColor: "#14b8a6",
-                    valid: "LIFETIME",
-                  },
-                ].map((cert, i) => (
+                {CERTIFICATIONS.map((cert, i) => (
                   <div
                     key={cert.title}
                     className="p-8 border flex flex-col md:flex-row gap-8 items-center reveal"
                     style={{
                       background: "#1c1b1b",
                       borderColor: "rgba(59,74,69,0.1)",
-                      transitionDelay: `${i * 0.1}s`,
+                      transitionDelay: `${i * 0.08}s`,
                     }}
                   >
                     <div
                       className="w-20 h-20 flex items-center justify-center border shrink-0"
-                      style={{ background: "#131313", borderColor: cert.borderColor }}
+                      style={{ background: "#131313", borderColor: "rgba(59,74,69,0.2)" }}
                     >
                       <span
                         className="material-symbols-outlined text-4xl"
-                        style={{ color: cert.iconColor }}
+                        style={{ color: cert.iconColorHex }}
                       >
                         {cert.icon}
                       </span>
@@ -863,8 +752,8 @@ rsp_core.boot()
                       <span
                         className="px-3 py-1 font-mono text-[10px] uppercase tracking-tighter"
                         style={{
-                          background: cert.bgColor,
-                          color: cert.providerColor,
+                          background: cert.bgColorStyle,
+                          color: cert.providerColorHex,
                         }}
                       >
                         PROVIDER: {cert.provider}
@@ -875,13 +764,13 @@ rsp_core.boot()
                         className="font-mono text-xs mb-2"
                         style={{ color: "#6b7280" }}
                       >
-                        VALID_UNTIL: {cert.valid}
+                        ISSUED: {cert.year}
                       </div>
                       <button
                         className="font-mono text-[10px] tracking-widest underline underline-offset-4"
                         style={{ color: "#F5C842" }}
                       >
-                        VERIFY_KEY
+                        VERIFIED_CERT
                       </button>
                     </div>
                   </div>
@@ -892,76 +781,23 @@ rsp_core.boot()
             {/* INTERNSHIPS TAB */}
             {activeTab === "internships" && (
               <div className="space-y-6">
-                {INTERNSHIPS.map((intern, i) => (
-                  <div
-                    key={intern.title}
-                    className="p-8 border flex flex-col md:flex-row gap-8 items-center reveal"
-                    style={{
-                      background: intern.isWinner
-                        ? "rgba(245,200,66,0.04)"
-                        : "#1c1b1b",
-                      borderColor: intern.isWinner
-                        ? "rgba(245,200,66,0.25)"
-                        : "rgba(59,74,69,0.1)",
-                      transitionDelay: `${i * 0.08}s`,
-                    }}
+                <div
+                  className="p-8 border flex flex-col items-center justify-center gap-4 reveal text-center"
+                  style={{
+                    background: "#1c1b1b",
+                    borderColor: "rgba(59,74,69,0.1)",
+                  }}
+                >
+                  <span
+                    className="material-symbols-outlined text-4xl"
+                    style={{ color: "rgba(186,202,196,0.3)" }}
                   >
-                    <div
-                      className={`w-20 h-20 flex items-center justify-center border shrink-0`}
-                      style={{
-                        background: "#131313",
-                        borderColor: intern.isWinner
-                          ? "rgba(245,200,66,0.3)"
-                          : "rgba(59,74,69,0.2)",
-                      }}
-                    >
-                      <span
-                        className="material-symbols-outlined text-4xl"
-                        style={{ color: intern.iconColorHex }}
-                      >
-                        {intern.icon}
-                      </span>
-                    </div>
-                    <div className="flex-grow text-center md:text-left">
-                      <div className="flex items-center gap-3 mb-1 justify-center md:justify-start">
-                        <h4
-                          className="text-2xl tracking-wide"
-                          style={{ fontFamily: "Bebas Neue, sans-serif", color: "#e5e2e1" }}
-                        >
-                          {intern.title}
-                        </h4>
-                        {intern.isWinner && (
-                          <span
-                            className="px-2 py-0.5 font-mono text-[9px] uppercase tracking-wider font-bold"
-                            style={{
-                              background: "#F5C842",
-                              color: "#0e0e0e",
-                            }}
-                          >
-                            WINNER
-                          </span>
-                        )}
-                      </div>
-                      <p className="text-sm mb-4" style={{ color: "#A0A0A0" }}>
-                        {intern.desc}
-                      </p>
-                      <span
-                        className="px-3 py-1 font-mono text-[10px] uppercase tracking-tighter"
-                        style={{ background: intern.bgColorStyle, color: intern.providerColorHex }}
-                      >
-                        PROVIDER: {intern.provider}
-                      </span>
-                    </div>
-                    <div className="text-right">
-                      <div
-                        className="font-mono text-xs"
-                        style={{ color: "#6b7280" }}
-                      >
-                        {intern.year}
-                      </div>
-                    </div>
+                    work_off
+                  </span>
+                  <div className="font-mono text-xs uppercase" style={{ color: "#6b7280", letterSpacing: "0.1em" }}>
+                    [ No additional internships to display. ]
                   </div>
-                ))}
+                </div>
               </div>
             )}
           </div>
@@ -1212,16 +1048,37 @@ rsp_core.boot()
           >
             © 2025 RSP_ARCHIVE — ALL_RIGHTS_RESERVED
           </span>
-          {/* Subtle forge access for Rohit — small, unobtrusive */}
-          <a
-            href="/login"
-            className="font-mono text-[9px] tracking-widest opacity-20 hover:opacity-60 transition-opacity"
-            style={{ color: "#F5C842" }}
-          >
-            [ FORGE_ACCESS ]
-          </a>
         </div>
       </footer>
+
+      {/* ─── OWNER DASHBOARD ACCESS ─── */}
+      <a
+        href="/login"
+        className="fixed z-50 flex items-center justify-center border transition-all hover:bg-[rgba(245,200,66,0.1)] group cursor-pointer"
+        style={{
+          bottom: "16px",
+          right: "24px",
+          width: "32px",
+          height: "32px",
+          borderColor: "rgba(245,200,66,0.4)",
+          background: "#1c1b1b",
+          color: "#F5C842",
+        }}
+        title="Owner Access"
+      >
+        <span className="material-symbols-outlined text-[14px]">lock</span>
+        {/* Tooltip */}
+        <span
+          className="absolute right-full mr-3 opacity-0 group-hover:opacity-100 transition-opacity font-mono text-[10px] whitespace-nowrap px-2 py-1 border pointer-events-none"
+          style={{
+            background: "#131313",
+            borderColor: "rgba(245,200,66,0.3)",
+            color: "#e5e2e1"
+          }}
+        >
+          OWNER_ACCESS
+        </span>
+      </a>
 
       {/* ─── NPC CHARACTER GUIDE ─── */}
       <CharacterGuide />
