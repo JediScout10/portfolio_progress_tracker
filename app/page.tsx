@@ -1,446 +1,1230 @@
-'use client'
+"use client";
 
-import { useEffect, useRef, useState, FormEvent } from 'react'
-import s from './portfolio.module.css'
+import React, { useState, useEffect, useRef, FormEvent } from "react";
+import CharacterGuide from "./components/Character/CharacterGuide";
 
-/* ─── DATA ───────────────────────────── */
-const SKILLS = [
-  { cat: 'Backend',  name: 'Python / FastAPI',    lvl: 'Expert',      pct: .90, color: 'var(--gold)' },
-  { cat: 'Backend',  name: 'Django / DRF',         lvl: 'Advanced',    pct: .82, color: 'var(--gold)' },
-  { cat: 'Frontend', name: 'Next.js / React',      lvl: 'Advanced',    pct: .78, color: 'var(--teal)' },
-  { cat: 'Frontend', name: 'Tailwind CSS',          lvl: 'Proficient',  pct: .75, color: 'var(--teal)' },
-  { cat: 'Database', name: 'PostgreSQL',            lvl: 'Advanced',    pct: .80, color: '#7B9AE0' },
-  { cat: 'Database', name: 'Supabase / Firebase',  lvl: 'Proficient',  pct: .72, color: '#7B9AE0' },
-  { cat: 'ML / AI',  name: 'Scikit-learn',          lvl: 'Proficient',  pct: .70, color: 'var(--red)' },
-  { cat: 'ML / AI',  name: 'Pandas / NumPy',        lvl: 'Advanced',    pct: .78, color: 'var(--red)' },
-  { cat: 'DevOps',   name: 'Docker',                lvl: 'Intermediate',pct: .62, color: 'var(--muted)' },
-  { cat: 'DevOps',   name: 'Git / GitHub',          lvl: 'Expert',      pct: .92, color: 'var(--muted)' },
-  { cat: 'Security', name: 'JWT / OAuth2',          lvl: 'Advanced',    pct: .80, color: '#C8A060' },
-  { cat: 'Security', name: 'Secure Architecture',   lvl: 'Proficient',  pct: .74, color: '#C8A060' },
-]
-
-const PROJECTS = [
+/* ─── INTERNSHIP DATA ─── */
+const INTERNSHIPS = [
   {
-    num: '01', tagClass: s.ptagFs, tagLabel: 'Full-Stack',
-    title: 'Personal Progress Tracker',
-    desc: 'Serverless discipline system built with Next.js and Supabase. Daily execution tracking with secure data isolation and row-level security.',
-    stack: ['Next.js','Supabase','TypeScript','PostgreSQL'],
-    links: [{ label: 'OPEN', href: '/', hi: true }, { label: 'GITHUB', href: 'https://github.com/JediScout10', ext: true }],
+    icon: "router",
+    iconColorHex: "#2dd4bf",
+    bgColorStyle: "rgba(45,212,191,0.08)",
+    providerColorHex: "#2dd4bf",
+    title: "NETWORK SECURITY ASSOCIATES",
+    desc: "Enterprise network security and infrastructure protection.",
+    provider: "CISCO",
+    year: "2024",
   },
   {
-    num: '02', tagClass: s.ptagMl, tagLabel: 'ML / Security',
-    title: 'FinShield — Fraud Detection',
-    desc: 'ML-powered fraud detection backend with behavioral risk analysis, IP tracking, Firebase auth telemetry, and secure transaction validation.',
-    stack: ['Python','FastAPI','Firebase','Scikit-learn','Docker'],
-    links: [{ label: 'LIVE', href: 'https://exekillers-hackwins2026.onrender.com/', hi: true, ext: true }, { label: 'GITHUB', href: 'https://github.com/JediScout10', ext: true }],
+    icon: "security",
+    iconColorHex: "#f87171",
+    bgColorStyle: "rgba(248,113,113,0.08)",
+    providerColorHex: "#f87171",
+    title: "CYBERSECURITY VIRTUAL INTERNSHIP",
+    desc: "Advanced threat detection and incident response protocols.",
+    provider: "PALO ALTO",
+    year: "2024",
   },
   {
-    num: '03', tagClass: s.ptagWeb, tagLabel: 'Web / Django',
-    title: 'CareConnect',
-    desc: 'Django-based mental health platform integrating structured assessments and AI-powered analysis tools for clinical insights.',
-    stack: ['Django','Python','PostgreSQL','REST API'],
-    links: [{ label: 'GITHUB', href: 'https://github.com/JediScout10', ext: true }],
+    icon: "hub",
+    iconColorHex: "#60a5fa",
+    bgColorStyle: "rgba(96,165,250,0.08)",
+    providerColorHex: "#60a5fa",
+    title: "CCNA JUNOS CERTIFICATION",
+    desc: "Enterprise networking routing and switching fundamentals.",
+    provider: "JUNIPER",
+    year: "NOV 2023",
   },
   {
-    num: '04', tagClass: s.ptagDo, tagLabel: 'DevOps',
-    title: 'Secure Auth System',
-    desc: 'JWT-based authentication system with refresh token rotation, device fingerprinting, brute-force protection, and audit logging.',
-    stack: ['FastAPI','JWT','Redis','PostgreSQL'],
-    links: [{ label: 'GITHUB', href: 'https://github.com/JediScout10', ext: true }],
+    icon: "android",
+    iconColorHex: "#4ade80",
+    bgColorStyle: "rgba(74,222,128,0.08)",
+    providerColorHex: "#4ade80",
+    title: "ANDROID DEVELOPER VIRTUAL INTERNSHIP",
+    desc: "Mobile application development with Android SDK and Jetpack.",
+    provider: "GOOGLE",
+    year: "2024",
   },
-]
+  {
+    icon: "smart_toy",
+    iconColorHex: "#fb923c",
+    bgColorStyle: "rgba(251,146,60,0.08)",
+    providerColorHex: "#fb923c",
+    title: "AI-ML VIRTUAL INTERNSHIP",
+    desc: "Applied machine learning and AI models on real datasets.",
+    provider: "AWS ACADEMY",
+    year: "2024",
+  },
+  {
+    icon: "emoji_events",
+    iconColorHex: "#F5C842",
+    bgColorStyle: "rgba(245,200,66,0.1)",
+    providerColorHex: "#F5C842",
+    title: "HACKBLITZ TECHSPRINT WINNER",
+    desc: "First place — competitive hackathon across security and AI tracks.",
+    provider: "HACKBLITZ",
+    year: "2026",
+    isWinner: true,
+  },
+];
 
-const CERTS = [
-  { abbr: 'GCP', name: 'Google Cloud Fundamentals',      org: 'Google · 2024' },
-  { abbr: 'ML',  name: 'Machine Learning Specialization', org: 'Coursera / DeepLearning.AI · 2024' },
-  { abbr: 'PY',  name: 'Python for Data Science',         org: 'IBM · 2023' },
-  { abbr: 'SEC', name: 'Cybersecurity Fundamentals',      org: 'IBM · 2024' },
-  { abbr: 'SQL', name: 'SQL for Data Science',             org: 'UC Davis / Coursera · 2023' },
-  { abbr: 'API', name: 'REST API Design & Security',       org: 'Postman · 2024' },
-]
-
-const SFX_WORDS = ['WHOOSH!','ZOOM!','CLICK!','ZAPP!','BOOM!','FLASH!']
-const SFX_COLORS = ['var(--gold)','var(--red)','var(--teal)','var(--cream)']
-
-/* ─── HELPERS ────────────────────────── */
-function useIntersect(cls: string, addCls: string) {
-  useEffect(() => {
-    const els = document.querySelectorAll(`.${cls}`)
-    const io = new IntersectionObserver((entries) => {
-      entries.forEach(e => {
-        if (e.isIntersecting) {
-          e.target.classList.add(addCls)
-          io.unobserve(e.target)
-        }
-      })
-    }, { threshold: 0.1 })
-    els.forEach(el => io.observe(el))
-    return () => io.disconnect()
-  }, [cls, addCls])
-}
-
-/* ─── COMPONENT ──────────────────────── */
 export default function PortfolioPage() {
-  const toastRef = useRef<HTMLDivElement>(null)
-  const toastTimeout = useRef<ReturnType<typeof setTimeout> | null>(null)
-  const [activeSection, setActiveSection] = useState('')
-  const [sfxVisible, setSfxVisible] = useState(false)
-  const [sfxStyle, setSfxStyle] = useState<React.CSSProperties>({})
-  const [sfxText, setSfxText] = useState('')
-  const [sfxColor, setSfxColor] = useState('')
+  const [activeTab, setActiveTab] = useState<"certs" | "internships">("certs");
+  const revealRef = useRef<IntersectionObserver | null>(null);
 
-  /* Reveals */
-  useIntersect(s.rev,  s.revV)
-  useIntersect(s.revL, s.revLV)
-  useIntersect(s.revR, s.revRV)
-
-  /* Skill bar animation */
+  /* ─── SCROLL REVEAL ─── */
   useEffect(() => {
-    const skEls = document.querySelectorAll(`.${s.sk}`)
-    const skIO = new IntersectionObserver((entries) => {
-      entries.forEach(e => {
-        if (e.isIntersecting) { e.target.classList.add(s.skLit); skIO.unobserve(e.target) }
-      })
-    }, { threshold: 0.2 })
-    skEls.forEach(el => skIO.observe(el))
-    return () => skIO.disconnect()
-  }, [])
+    revealRef.current = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((e) => {
+          if (e.isIntersecting) {
+            e.target.classList.add("visible");
+            revealRef.current?.unobserve(e.target);
+          }
+        });
+      },
+      { threshold: 0.12 }
+    );
 
-  /* Nav active section */
-  useEffect(() => {
-    const sections = document.querySelectorAll('section[id]')
-    const navIO = new IntersectionObserver((entries) => {
-      entries.forEach(e => { if (e.isIntersecting) setActiveSection(e.target.id) })
-    }, { threshold: 0.4, rootMargin: '-52px 0px 0px 0px' })
-    sections.forEach(sec => navIO.observe(sec))
-    return () => navIO.disconnect()
-  }, [])
+    document.querySelectorAll(".reveal").forEach((el) => {
+      revealRef.current?.observe(el);
+    });
 
-  /* SFX click handler */
-  useEffect(() => {
-    const handleClick = (e: MouseEvent) => {
-      const word  = SFX_WORDS[Math.floor(Math.random() * SFX_WORDS.length)]
-      const color = SFX_COLORS[Math.floor(Math.random() * SFX_COLORS.length)]
-      setSfxText(word)
-      setSfxColor(color)
-      setSfxStyle({ left: e.clientX - 60 + 'px', top: e.clientY - 60 + 'px' })
-      setSfxVisible(true)
-      if (toastTimeout.current) clearTimeout(toastTimeout.current)
-      toastTimeout.current = setTimeout(() => setSfxVisible(false), 700)
-    }
-    document.addEventListener('click', handleClick)
-    return () => document.removeEventListener('click', handleClick)
-  }, [])
+    return () => revealRef.current?.disconnect();
+  }, []);
 
-  /* Contact form */
+  /* ─── CONTACT FORM ─── */
   const handleContact = (e: FormEvent<HTMLFormElement>) => {
-    e.preventDefault()
-    const form = e.currentTarget
-    const name  = (form.elements.namedItem('cf-name')  as HTMLInputElement).value
-    const email = (form.elements.namedItem('cf-email') as HTMLInputElement).value
-    const msg   = (form.elements.namedItem('cf-msg')   as HTMLTextAreaElement).value
-    window.location.href = `mailto:rohitsanjupatil.rsp10@gmail.com?subject=Portfolio Contact from ${encodeURIComponent(name)}&body=${encodeURIComponent(msg + '\n\nFrom: ' + email)}`
-  }
+    e.preventDefault();
+    const form = e.currentTarget;
+    const name = (form.elements.namedItem("cf-name") as HTMLInputElement).value;
+    const email = (form.elements.namedItem("cf-email") as HTMLInputElement).value;
+    const msg = (form.elements.namedItem("cf-msg") as HTMLTextAreaElement).value;
+    window.location.href = `mailto:rohitsanjupatil.rsp10@gmail.com?subject=Portfolio Contact from ${encodeURIComponent(name)}&body=${encodeURIComponent(msg + "\n\nFrom: " + email)}`;
+  };
 
   return (
-    <div className={s.root}>
-      {/* Google Fonts */}
-      {/* eslint-disable-next-line @next/next/no-page-custom-font */}
-      <style>{`@import url('https://fonts.googleapis.com/css2?family=Bangers&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,700;1,400&family=JetBrains+Mono:wght@400;600&family=Permanent+Marker&display=swap');`}</style>
+    <div className="bg-[#131313] text-[#e5e2e1] min-h-screen overflow-x-hidden">
 
-      {/* SFX Toast */}
-      <div
-        ref={toastRef}
-        className={`${s.sfxToast}${sfxVisible ? ' ' + s.sfxToastPop : ''}`}
-        style={{ ...sfxStyle, color: sfxColor }}
+      {/* ─── NAV ─── */}
+      <header
+        id="top"
+        className="fixed top-0 w-full z-50 flex justify-between items-center px-6 py-4"
+        style={{ background: "rgba(10,10,15,0.7)", backdropFilter: "blur(12px)" }}
       >
-        {sfxText}
-      </div>
-
-      {/* ─── NAV ──────────────────────────── */}
-      <nav className={s.nav}>
-        <a href="#hero" className={s.nl}>RSP</a>
-        <ul className={s.na}>
-          {['about','skills','projects','contact'].map(sec => (
-            <li key={sec}>
-              <a
-                href={`#${sec}`}
-                className={`${s.naLink}${activeSection === sec ? ' ' + s.naLinkOn : ''}`}
-              >
-                {sec.charAt(0).toUpperCase() + sec.slice(1)}
-              </a>
-            </li>
+        <div
+          className="text-2xl font-black tracking-wider cursor-pointer"
+          style={{ fontFamily: "Bebas Neue, sans-serif", color: "#F5C842" }}
+        >
+          RSP
+        </div>
+        <nav className="hidden md:flex gap-8">
+          {[
+            { label: "WORK", href: "#work" },
+            { label: "ABOUT", href: "#about" },
+            { label: "STACK", href: "#stack" },
+            { label: "CONTACT", href: "#contact" },
+          ].map(({ label, href }) => (
+            <a
+              key={label}
+              href={href}
+              className="text-[#6b7280] hover:text-[#F5C842] transition-colors font-mono uppercase tracking-widest text-xs"
+            >
+              {label}
+            </a>
           ))}
-        </ul>
-        <a href="mailto:rohitsanjupatil.rsp10@gmail.com" className={s.nr}>Hire Me →</a>
-      </nav>
+        </nav>
+        <a
+          href="#contact"
+          className="text-[#F5C842] border border-[rgba(245,200,66,0.3)] px-6 py-2 font-mono text-xs tracking-tighter hover:bg-[rgba(245,200,66,0.1)] transition-all"
+          style={{ background: "rgba(245,200,66,0.05)" }}
+        >
+          HIRE ME
+        </a>
+      </header>
 
-      {/* ─── MANGA PAGE ───────────────────── */}
-      <div className={s.mangaPage}>
-
-        {/* ═══ ① HERO ════════════════════════ */}
-        <section id="hero" className={s.hero}>
-          <div className={s.heroBg} />
-
-          <div className={s.heroL}>
-            <div className={s.heroChapter}>
-              PORTFOLIO · ISSUE 001 · 2025
-              <span>NEW</span>
-            </div>
-            <h1 className={s.heroName}>
-              <div className="line1">ROHIT</div>
-              <div className="line2">SANJU</div>
-              <div className="line3">PATIL.</div>
-            </h1>
-            <p className={s.heroRole}>// Software Engineer · Full-Stack · AI/ML</p>
-            <p className={s.heroDesc}>
-              Building secure backend systems and full-stack applications
-              designed for long-term maintainability and real-world constraints.
-              Based in Mumbai, Maharashtra.
-            </p>
-            <div className={s.heroBtns}>
-              <a href="#projects" className={s.btnA}>View Projects</a>
-              <a href="#contact"  className={s.btnB}>Get in Touch</a>
-            </div>
-            <div className={s.heroStats}>
-              <div className={s.hstat}><div className={s.hstatN}>5+</div><div className={s.hstatL}>Projects</div></div>
-              <div className={s.hstat}><div className={s.hstatN}>6</div><div className={s.hstatL}>Internships</div></div>
-              <div className={s.hstat}><div className={s.hstatN}>2027</div><div className={s.hstatL}>Graduate</div></div>
-            </div>
-          </div>
-
-          <div className={`${s.heroR} ${s.htWarm}`}>
-            <div className={s.actionBg} style={{ bottom: '-2rem', right: '-1rem', fontSize: 'clamp(8rem,18vw,22rem)' }}>RSP</div>
-            <div className={s.heroIssue}>APSIT · MUMBAI UNIV<br />ISSUE #001</div>
-            <div className={s.heroBubble}>
-              <div className={`${s.bubble} ${s.tailBl}`} style={{ fontSize: '.78rem' }}>
-                Hey! Welcome to my portfolio.<br />Scroll down to see my work!
+      <main className="pt-20">
+        {/* ─── HERO ─── */}
+        <section
+          id="hero"
+          className="relative py-20 flex flex-col justify-center px-6 md:px-12 overflow-hidden"
+          style={{ background: "#0e0e0e" }}
+        >
+          <div
+            className="scanline absolute inset-0 z-10 opacity-30"
+            aria-hidden="true"
+          />
+          <div className="grid grid-cols-1 md:grid-cols-12 gap-8 relative z-20 items-center">
+            {/* Left */}
+            <div className="md:col-span-7 reveal">
+              <div
+                className="inline-block px-2 py-1 font-mono text-[10px] mb-4 tracking-widest"
+                style={{
+                  background: "rgba(245,200,66,0.1)",
+                  color: "#F5C842",
+                }}
+              >
+                SYSTEM_VERSION_3.0_PATCHED
               </div>
-            </div>
-            <img className={s.heroChar} src="/static/character_wave.png" alt="Rohit waving" />
-          </div>
-        </section>
-
-        <div className={s.gutterLine} />
-
-        {/* ═══ ② ABOUT ═══════════════════════ */}
-        <section id="about">
-          <div className={s.aboutSpread}>
-            <div className={`${s.aboutCharPanel} ${s.htCool} ${s.revL}`}>
-              <div className={s.actionBg}>ORIGIN</div>
-              <div className={s.aboutCharBubble}>
-                <div className={`${s.bubble} ${s.tailBr}`} style={{ fontSize: '.76rem', maxWidth: '200px' }}>
-                  This is me in my natural habitat — thinking about clean architecture.
-                </div>
-              </div>
-              <img className={s.aboutChar} src="/static/character_idle.png" alt="Rohit thinking about architecture" />
-            </div>
-
-            <div className={s.aboutTextPanel}>
-              <div className={s.actionBg}>LORE</div>
-              <div className={`${s.panelInner} ${s.rev}`}>
-                <div className={s.chLabel}>Chapter 02 · Origin Story</div>
-                <h2 className={s.aboutNameBig}>ROHIT<br /><em>SANJU PATIL</em></h2>
-                <p className={s.aboutPara}>
-                  Final-year B.E. CS student at APSIT, Mumbai University. I build systems that are
-                  secure by design — from backend APIs to full-stack products. My work focuses on
-                  correctness, maintainability, and real-world constraints.
-                </p>
-                <p className={s.aboutPara}>
-                  I&apos;ve completed 6 internships across domains including ML, web security, and
-                  enterprise systems. Currently focused on backend engineering and AI-integrated products.
-                </p>
-                <div className={s.aboutTags}>
-                  {['Python','FastAPI','Next.js','Django','Supabase','Firebase','ML/AI','Docker','PostgreSQL'].map(t => (
-                    <span key={t} className={s.atag}>{t}</span>
-                  ))}
-                </div>
-                <div className={s.eduBox}>
-                  <h4>B.E. COMPUTER SCIENCE</h4>
-                  <p>APSIT · Mumbai University · 2021–2025 · CGPA 8.4</p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        <div className={s.gutterLine} />
-
-        {/* ═══ ③ SKILLS ══════════════════════ */}
-        <section id="skills">
-          <div className={s.skillsPanel}>
-            <div className={s.actionBg}>POWER</div>
-            <div className={`${s.skillsHeader} ${s.rev}`}>
-              <div className={s.shL}>
-                <div className={s.chLabel}>Chapter 03 · Power Level</div>
-                <h2>SKILL<br /><span>SET</span></h2>
-              </div>
-              <div className={s.shR}>// Measured in<br />real-world deployment</div>
-            </div>
-
-            <div style={{ display: 'flex', gap: '24px', alignItems: 'flex-start', marginBottom: '2rem' }}>
-              <img
-                src="/static/character_think.png"
-                alt="Rohit thinking about skills"
-                style={{ width: 'min(160px,22vw)', filter: 'drop-shadow(0 -4px 20px rgba(200,52,26,.2))', flexShrink: 0 }}
-              />
-              <div className={s.skillGrid} style={{ flex: 1 }}>
-                {SKILLS.map((sk, i) => (
+              <h1
+                className="hero-name leading-none tracking-tight mb-6"
+                style={{
+                  fontFamily: "Bebas Neue, sans-serif",
+                  fontSize: "clamp(3.5rem, 10vw, 8rem)",
+                  color: "#e5e2e1",
+                }}
+              >
+                ROHIT SANJU{" "}
+                <span style={{ color: "#F5C842" }}>PATIL</span>
+              </h1>
+              <p
+                className="text-lg md:text-[18px] max-w-xl mb-8 leading-relaxed"
+                style={{ color: "#A0A0A0", fontFamily: "Space Grotesk, sans-serif" }}
+              >
+                Full Stack Engineer × Security Specialist — building systems that
+                perform at scale
+              </p>
+              {/* Stat pills */}
+              <div className="flex flex-wrap gap-4 mb-4">
+                {[
+                  "5+ Years Exp",
+                  "12+ Projects",
+                  "9.2 GPA",
+                ].map((label, i) => (
                   <div
                     key={i}
-                    className={s.sk}
-                    style={{ '--bar-color': sk.color, '--pct': sk.pct } as React.CSSProperties}
+                    className="reveal"
+                    style={{ transitionDelay: `${i * 0.1}s` }}
                   >
-                    <div className={s.skCat} style={{ color: sk.color }}>{sk.cat}</div>
-                    <div className={s.skName}>{sk.name}</div>
-                    <div className={s.skLvl}>{sk.lvl} · {Math.round(sk.pct * 100)}%</div>
+                    <div
+                      className="flex items-center gap-3 px-4 py-2 border"
+                      style={{
+                        background: "rgba(245,200,66,0.08)",
+                        borderColor: "rgba(245,200,66,0.3)",
+                        boxShadow: "0 0 15px rgba(245,200,66,0.12)",
+                      }}
+                    >
+                      <span
+                        className="w-2 h-2 animate-pulse"
+                        style={{ background: "#F5C842", display: "inline-block" }}
+                      />
+                      <span
+                        className="font-mono text-xs uppercase tracking-widest"
+                        style={{ color: "#F5C842" }}
+                      >
+                        {label}
+                      </span>
+                    </div>
                   </div>
                 ))}
               </div>
+              
+              {/* CTA buttons */}
+              <div className="flex flex-wrap gap-4 mt-6">
+                <a
+                  href="#work"
+                  className="px-8 py-3 font-mono text-xs tracking-widest uppercase transition-all hover:brightness-110"
+                  style={{
+                    background: "#F5C842",
+                    color: "#0e0e0e",
+                    fontFamily: "Bebas Neue, sans-serif",
+                    fontSize: "1.1rem",
+                    letterSpacing: "0.2em",
+                  }}
+                >
+                  VIEW_PROJECTS
+                </a>
+                <a
+                  href="#contact"
+                  className="px-8 py-3 font-mono text-xs tracking-widest uppercase transition-all hover:bg-[rgba(245,200,66,0.08)]"
+                  style={{
+                    border: "1px solid rgba(245,200,66,0.3)",
+                    color: "#F5C842",
+                    fontFamily: "Bebas Neue, sans-serif",
+                    fontSize: "1.1rem",
+                    letterSpacing: "0.2em",
+                  }}
+                >
+                  GET_IN_TOUCH
+                </a>
+              </div>
+            </div>
+
+            {/* Right — Terminal */}
+            <div className="md:col-span-5 relative reveal reveal-delay-2">
+              <div
+                className="p-1 border"
+                style={{
+                  background: "#2a2a2a",
+                  borderColor: "rgba(59,74,69,0.3)",
+                }}
+              >
+                {/* Terminal header */}
+                <div
+                  className="flex items-center gap-2 px-3 py-2 border-b"
+                  style={{
+                    background: "#0e0e0e",
+                    borderColor: "rgba(59,74,69,0.2)",
+                  }}
+                >
+                  <div className="flex gap-1.5">
+                    <div className="w-2.5 h-2.5" style={{ background: "rgba(239,68,68,0.5)" }} />
+                    <div className="w-2.5 h-2.5" style={{ background: "rgba(234,179,8,0.5)" }} />
+                    <div className="w-2.5 h-2.5" style={{ background: "rgba(34,197,94,0.5)" }} />
+                  </div>
+                  <span
+                    className="font-mono text-[10px] ml-4"
+                    style={{ color: "#bacac4" }}
+                  >
+                    main.py — rsp_core
+                  </span>
+                </div>
+                {/* Code */}
+                <pre
+                  className="p-6 font-mono text-[13px] overflow-x-auto leading-relaxed"
+                  style={{ background: "#0e0e0e", color: "#bacac4" }}
+                >
+<span style={{ color: "#F5C842" }}>def</span>{" "}
+<span style={{ color: "#60a5fa" }}>deploy_secure_system</span>(env):{"\n"}
+{"    "}<span style={{ color: "#6b7280" }}># Initializing RSP security protocol</span>{"\n"}
+{"    "}protocols = [<span style={{ color: "#4ade80" }}>&apos;RSA-4096&apos;</span>, <span style={{ color: "#4ade80" }}>&apos;AES-256&apos;</span>]{"\n"}
+{"    "}<span style={{ color: "#F5C842" }}>for</span> p <span style={{ color: "#F5C842" }}>in</span> protocols:{"\n"}
+{"        "}print(<span style={{ color: "#4ade80" }}>{`f"Engaging {"{p}"}..."`}</span>){"\n"}
+{"\n"}
+{"    "}<span style={{ color: "#F5C842" }}>return</span> {"{"}{"\n"}
+{"        "}<span style={{ color: "#4ade80" }}>&quot;status&quot;</span>: <span style={{ color: "#4ade80" }}>&quot;STABLE&quot;</span>,{"\n"}
+{"        "}<span style={{ color: "#4ade80" }}>&quot;latency&quot;</span>: <span style={{ color: "#4ade80" }}>&quot;0.04ms&quot;</span>,{"\n"}
+{"        "}<span style={{ color: "#4ade80" }}>&quot;threat_level&quot;</span>: <span style={{ color: "#f87171" }}>0</span>{"\n"}
+{"    "}{"}"}{"\n"}
+{"\n"}
+<span style={{ color: "#6b7280" }}>{"// "}Execution start</span>{"\n"}
+rsp_core.boot()
+                </pre>
+              </div>
             </div>
           </div>
         </section>
 
-        <div className={s.gutterLine} />
+        {/* ─── TECHNICAL STACK ─── */}
+        <section
+          id="stack"
+          className="py-20 px-6 md:px-12"
+          style={{ background: "#131313" }}
+        >
+          <div className="flex items-center gap-4 mb-16 reveal">
+            <h2
+              className="text-4xl tracking-wider whitespace-nowrap"
+              style={{ fontFamily: "Bebas Neue, sans-serif", color: "#e5e2e1" }}
+            >
+              TECHNICAL_STACK
+            </h2>
+            <div className="h-px flex-grow" style={{ background: "rgba(59,74,69,0.2)" }} />
+          </div>
 
-        {/* ═══ ④ PROJECTS ════════════════════ */}
-        <section id="projects">
-          <div className={s.projectsSection}>
-            <div className={s.projectsHdr}>
-              <div className={`${s.phL} ${s.rev}`}>
-                <div className={s.chLabel}>Chapter 04 · Mission Log</div>
-                <h2>ACTIVE<br /><span>PROJECTS</span></h2>
-              </div>
-              <div className={`${s.phR} ${s.revR}`}>
-                <div className={s.phBubble}>
-                  <div className={`${s.bubble} ${s.tailBr}`} style={{ fontSize: '.74rem' }}>
-                    These are live. Go check them out.
-                  </div>
+          <div className="space-y-12">
+            {[
+              {
+                label: "Languages",
+                items: ["Python", "C/C++", "JavaScript", "SQL", "Solidity"],
+              },
+              {
+                label: "Backend_System",
+                items: ["Django", "Node.js", "PostgreSQL", "Docker", "Kubernetes", "AWS Lambda"],
+              },
+              {
+                label: "Frontend_Interface",
+                items: ["React", "Tailwind CSS", "Next.js", "Framer Motion", "Three.js"],
+              },
+            ].map(({ label, items }, ri) => (
+              <div
+                key={label}
+                className="grid grid-cols-1 md:grid-cols-12 gap-4 items-center reveal"
+                style={{ transitionDelay: `${ri * 0.1}s` }}
+              >
+                <div
+                  className="md:col-span-3 font-mono text-xs uppercase"
+                  style={{
+                    color: "#bacac4",
+                    letterSpacing: "0.2em",
+                  }}
+                >
+                  {label}
                 </div>
-                <img className={s.phChar} src="/static/character_point.png" alt="Rohit pointing at projects" />
-              </div>
-            </div>
-
-            <div className={s.projGrid}>
-              {PROJECTS.map((p, i) => (
-                <div key={i} className={`${s.pcard} ${s.rev}`}>
-                  <div className={s.pcardNum}>{p.num}</div>
-                  <span className={`${s.ptag} ${p.tagClass}`}>{p.tagLabel}</span>
-                  <div className={s.pt}>{p.title}</div>
-                  <p className={s.pd}>{p.desc}</p>
-                  <div className={s.pstack}>
-                    {p.stack.map(st => <span key={st} className={s.pst}>{st}</span>)}
-                  </div>
-                  <div className={s.plinks}>
-                    {p.links.map(l => (
-                      <a
-                        key={l.label}
-                        href={l.href}
-                        {...(l.ext ? { target: '_blank', rel: 'noopener' } : {})}
-                        className={`${s.pl}${l.hi ? ' ' + s.plHi : ''}`}
-                      >
-                        {l.label}
-                      </a>
-                    ))}
-                  </div>
+                <div className="md:col-span-9 flex flex-wrap gap-3">
+                  {items.map((item, ii) => (
+                    <div
+                      key={item}
+                      className="flex items-center gap-2 px-4 py-2 border font-mono text-xs reveal"
+                      style={{
+                        background: "rgba(245,200,66,0.08)",
+                        borderColor: "rgba(245,200,66,0.3)",
+                        color: "#F5C842",
+                        transitionDelay: `${ii * 0.05}s`,
+                      }}
+                    >
+                      {ii === 0 && (
+                        <span
+                          className="w-1.5 h-1.5 rounded-full"
+                          style={{
+                            background: "#F5C842",
+                            boxShadow: "0 0 8px #F5C842",
+                            display: "inline-block",
+                          }}
+                        />
+                      )}
+                      {item}
+                    </div>
+                  ))}
                 </div>
-              ))}
-            </div>
+              </div>
+            ))}
           </div>
         </section>
 
-        <div className={s.gutterLine} />
+        {/* ─── PROJECT ARCHIVE ─── */}
+        <section
+          id="work"
+          className="py-20 px-6 md:px-12"
+          style={{ background: "#0e0e0e" }}
+        >
+          <div className="flex items-center gap-4 mb-16 reveal">
+            <h2
+              className="text-4xl tracking-wider whitespace-nowrap"
+              style={{ fontFamily: "Bebas Neue, sans-serif", color: "#e5e2e1" }}
+            >
+              PROJECT_ARCHIVE
+            </h2>
+            <div className="h-px flex-grow" style={{ background: "rgba(59,74,69,0.2)" }} />
+          </div>
 
-        {/* ═══ ⑤ CERTS ═══════════════════════ */}
-        <section id="certs">
-          <div className={s.certsSection}>
-            <div className={`${s.certsHdr} ${s.rev}`}>
+          {/* Featured */}
+          <div
+            className="group relative border-l-4 p-8 md:p-12 mb-12 transition-all overflow-hidden reveal"
+            style={{
+              background: "#201f1f",
+              borderColor: "#F5C842",
+            }}
+          >
+            <div className="grid md:grid-cols-2 gap-8 items-center relative z-10">
               <div>
-                <div className={s.chLabel}>Chapter 05 · Credentials</div>
-                <h2>CERTIFI<br /><span>CATIONS</span></h2>
-              </div>
-              <img className={s.certChar} src="/static/character_idle.png" alt="Rohit with certifications" />
-            </div>
-
-            <div className={s.certsGrid}>
-              {CERTS.map((c, i) => (
-                <div key={i} className={`${s.cc} ${s.rev}`}>
-                  <div className={s.ci}>{c.abbr}</div>
-                  <div>
-                    <div className={s.cn}>{c.name}</div>
-                    <div className={s.co}>{c.org}</div>
-                  </div>
+                <div
+                  className="font-mono text-[10px] mb-2"
+                  style={{ color: "#F5C842", letterSpacing: "0.4em" }}
+                >
+                  FEATURED_SYSTEM
                 </div>
-              ))}
+                <h3
+                  className="text-5xl mb-6"
+                  style={{ fontFamily: "Bebas Neue, sans-serif", color: "#e5e2e1" }}
+                >
+                  FINSHIELD AI
+                </h3>
+                <p
+                  className="text-sm leading-relaxed mb-8 max-w-md"
+                  style={{ color: "#A0A0A0" }}
+                >
+                  A neural network-based financial protection suite capable of
+                  identifying fraudulent patterns in real-time with 99.8% accuracy.
+                  Built for high-frequency banking throughput.
+                </p>
+                <div className="flex flex-wrap gap-2 mb-8">
+                  {["PYTHON", "FASTAPI", "SCIKIT-LEARN", "FIREBASE"].map((t) => (
+                    <span
+                      key={t}
+                      className="font-mono text-[10px] px-2 py-1 border"
+                      style={{
+                        background: "#353534",
+                        color: "#bacac4",
+                        borderColor: "rgba(59,74,69,0.2)",
+                      }}
+                    >
+                      {t}
+                    </span>
+                  ))}
+                </div>
+                <a
+                  href="https://exekillers-hackwins2026.onrender.com/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-block px-8 py-3 font-mono tracking-widest hover:brightness-110 active:scale-95 transition-all"
+                  style={{
+                    background: "#F5C842",
+                    color: "#0e0e0e",
+                    fontFamily: "Bebas Neue, sans-serif",
+                    fontSize: "1.1rem",
+                    letterSpacing: "0.2em",
+                  }}
+                >
+                  DECRYPT_AND_VIEW
+                </a>
+              </div>
+              {/* Placeholder visual */}
+              <div
+                className="relative border overflow-hidden hidden md:block"
+                style={{
+                  aspectRatio: "16/9",
+                  background: "#131313",
+                  borderColor: "rgba(59,74,69,0.3)",
+                }}
+              >
+                <div
+                  className="absolute inset-0 flex items-center justify-center"
+                  style={{ color: "rgba(245,200,66,0.15)" }}
+                >
+                  <span
+                    className="material-symbols-outlined"
+                    style={{ fontSize: "96px" }}
+                  >
+                    shield
+                  </span>
+                </div>
+                <div
+                  className="absolute inset-0"
+                  style={{
+                    background:
+                      "linear-gradient(to top, #131313 0%, transparent 60%)",
+                    opacity: 0.8,
+                  }}
+                />
+              </div>
             </div>
           </div>
-        </section>
 
-        <div className={s.gutterLine} />
-
-        {/* ═══ ⑥ CONTACT ═════════════════════ */}
-        <section id="contact">
-          <div className={s.contactSection}>
-            <div className={`${s.contactLeft} ${s.revL}`}>
-              <div className={s.chLabel}>Chapter 06 · Transmission</div>
-              <h2 className={s.clBig}>LET&apos;S<br /><span>LINK UP</span></h2>
-              <p className={s.clSub}>
-                Open to backend engineering roles, AI/ML projects, and consulting work.
-                Based in Mumbai — available remotely worldwide.
+          {/* 4-card grid */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            {/* Card 1 */}
+            <div
+              className="project-card group p-6 border transition-all duration-300 reveal reveal-delay-1"
+              style={{
+                background: "#2a2a2a",
+                borderColor: "rgba(59,74,69,0.2)",
+              }}
+            >
+              <div className="flex justify-between items-start mb-6">
+                <span className="material-symbols-outlined" style={{ color: "#F5C842" }}>
+                  monitoring
+                </span>
+                <span className="font-mono text-[9px]" style={{ color: "#6b7280" }}>
+                  ID: PRJ-044
+                </span>
+              </div>
+              <h4
+                className="text-2xl mb-3 tracking-wide"
+                style={{ fontFamily: "Bebas Neue, sans-serif", color: "#e5e2e1" }}
+              >
+                PROGRESS TRACKER
+              </h4>
+              <p
+                className="text-[14px] leading-snug mb-6 overflow-hidden"
+                style={{ color: "#A0A0A0", height: "3rem" }}
+              >
+                Serverless discipline system with secure data isolation and row-level
+                security.
               </p>
-              <div className={s.contactLinks}>
-                <a href="mailto:rohitsanjupatil.rsp10@gmail.com" className={s.clink}>
-                  <span className={s.clLbl}>Email</span>
-                  rohitsanjupatil.rsp10@gmail.com
-                </a>
-                <a href="https://github.com/JediScout10" target="_blank" rel="noopener" className={s.clink}>
-                  <span className={s.clLbl}>GitHub</span>
-                  github.com/JediScout10
-                </a>
-                <a href="https://www.linkedin.com/in/rohit-patil-3b5579321" target="_blank" rel="noopener" className={s.clink}>
-                  <span className={s.clLbl}>LinkedIn</span>
-                  linkedin.com/in/rohit-patil-3b5579321
-                </a>
-                <a href="https://exekillers-hackwins2026.onrender.com/" target="_blank" rel="noopener" className={s.clink}>
-                  <span className={s.clLbl}>Live Demo</span>
-                  FinShield · Fraud Detection System
-                </a>
+              <div className="flex flex-wrap gap-2 mb-8">
+                {["NEXT.JS", "SUPABASE", "TYPESCRIPT"].map((t) => (
+                  <span
+                    key={t}
+                    className="font-mono text-[9px] px-2 py-0.5 border"
+                    style={{
+                      background: "#131313",
+                      color: "#bacac4",
+                      borderColor: "rgba(59,74,69,0.1)",
+                    }}
+                  >
+                    {t}
+                  </span>
+                ))}
               </div>
+              <button
+                className="w-full py-2 font-mono text-[10px] uppercase tracking-widest border transition-all hover:text-[#0e0e0e]"
+                style={{ borderColor: "rgba(245,200,66,0.3)", color: "#F5C842" }}
+                onMouseEnter={(e) => {
+                  (e.target as HTMLButtonElement).style.background = "#F5C842";
+                  (e.target as HTMLButtonElement).style.color = "#0e0e0e";
+                }}
+                onMouseLeave={(e) => {
+                  (e.target as HTMLButtonElement).style.background = "transparent";
+                  (e.target as HTMLButtonElement).style.color = "#F5C842";
+                }}
+              >
+                INIT_PREVIEW
+              </button>
             </div>
 
-            <div className={s.contactRight}>
-              <div className={s.actionBg}>SEND</div>
-              <img
-                src="/static/character_talk.png"
-                alt="Rohit ready to talk"
-                style={{ width: 'min(140px,20vw)', filter: 'drop-shadow(-4px 0 18px rgba(232,168,40,.2))', marginBottom: '1.5rem', position: 'relative', zIndex: 2, alignSelf: 'flex-end' }}
-              />
-              <form className={s.contactForm} onSubmit={handleContact}>
-                <div className={s.fg}>
-                  <label className={s.fl} htmlFor="cf-name">Name</label>
-                  <input id="cf-name" name="cf-name" className={s.fi} type="text" placeholder="Your name" required />
-                </div>
-                <div className={s.fg}>
-                  <label className={s.fl} htmlFor="cf-email">Email</label>
-                  <input id="cf-email" name="cf-email" className={s.fi} type="email" placeholder="your@email.com" required />
-                </div>
-                <div className={s.fg}>
-                  <label className={s.fl} htmlFor="cf-msg">Message</label>
-                  <textarea id="cf-msg" name="cf-msg" className={s.fi} placeholder="What are you building?" required />
-                </div>
-                <button className={s.fsub} type="submit">TRANSMIT MESSAGE →</button>
-              </form>
+            {/* Card 2 */}
+            <div
+              className="project-card group p-6 border transition-all duration-300 reveal reveal-delay-2"
+              style={{
+                background: "#2a2a2a",
+                borderColor: "rgba(59,74,69,0.2)",
+              }}
+            >
+              <div className="flex justify-between items-start mb-6">
+                <span className="material-symbols-outlined" style={{ color: "#F5C842" }}>
+                  health_and_safety
+                </span>
+                <span className="font-mono text-[9px]" style={{ color: "#6b7280" }}>
+                  ID: PRJ-091
+                </span>
+              </div>
+              <h4
+                className="text-2xl mb-3 tracking-wide"
+                style={{ fontFamily: "Bebas Neue, sans-serif", color: "#e5e2e1" }}
+              >
+                CARECONNECT
+              </h4>
+              <p
+                className="text-[14px] leading-snug mb-6 overflow-hidden"
+                style={{ color: "#A0A0A0", height: "3rem" }}
+              >
+                Mental health platform with AI-powered assessments and structured
+                clinical insights.
+              </p>
+              <div className="flex flex-wrap gap-2 mb-8">
+                {["DJANGO", "PYTHON", "POSTGRESQL"].map((t) => (
+                  <span
+                    key={t}
+                    className="font-mono text-[9px] px-2 py-0.5 border"
+                    style={{
+                      background: "#131313",
+                      color: "#bacac4",
+                      borderColor: "rgba(59,74,69,0.1)",
+                    }}
+                  >
+                    {t}
+                  </span>
+                ))}
+              </div>
+              <a
+                href="https://github.com/JediScout10"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="block w-full py-2 text-center font-mono text-[10px] uppercase tracking-widest border transition-all"
+                style={{ borderColor: "rgba(245,200,66,0.3)", color: "#F5C842" }}
+                onMouseEnter={(e) => {
+                  (e.target as HTMLAnchorElement).style.background = "#F5C842";
+                  (e.target as HTMLAnchorElement).style.color = "#0e0e0e";
+                }}
+                onMouseLeave={(e) => {
+                  (e.target as HTMLAnchorElement).style.background = "transparent";
+                  (e.target as HTMLAnchorElement).style.color = "#F5C842";
+                }}
+              >
+                OPEN_SYSTEM
+              </a>
+            </div>
+
+            {/* Card 3 */}
+            <div
+              className="project-card group p-6 border transition-all duration-300 reveal reveal-delay-3"
+              style={{
+                background: "#2a2a2a",
+                borderColor: "rgba(59,74,69,0.2)",
+              }}
+            >
+              <div className="flex justify-between items-start mb-6">
+                <span className="material-symbols-outlined" style={{ color: "#F5C842" }}>
+                  security
+                </span>
+                <span className="font-mono text-[9px]" style={{ color: "#6b7280" }}>
+                  ID: PRJ-102
+                </span>
+              </div>
+              <h4
+                className="text-2xl mb-3 tracking-wide"
+                style={{ fontFamily: "Bebas Neue, sans-serif", color: "#e5e2e1" }}
+              >
+                SECURE AUTH
+              </h4>
+              <p
+                className="text-[14px] leading-snug mb-6 overflow-hidden"
+                style={{ color: "#A0A0A0", height: "3rem" }}
+              >
+                JWT auth with refresh rotation, device fingerprinting, and
+                brute-force protection.
+              </p>
+              <div className="flex flex-wrap gap-2 mb-8">
+                {["FASTAPI", "JWT", "REDIS"].map((t) => (
+                  <span
+                    key={t}
+                    className="font-mono text-[9px] px-2 py-0.5 border"
+                    style={{
+                      background: "#131313",
+                      color: "#bacac4",
+                      borderColor: "rgba(59,74,69,0.1)",
+                    }}
+                  >
+                    {t}
+                  </span>
+                ))}
+              </div>
+              <a
+                href="https://github.com/JediScout10"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="block w-full py-2 text-center font-mono text-[10px] uppercase tracking-widest border transition-all"
+                style={{ borderColor: "rgba(245,200,66,0.3)", color: "#F5C842" }}
+                onMouseEnter={(e) => {
+                  (e.target as HTMLAnchorElement).style.background = "#F5C842";
+                  (e.target as HTMLAnchorElement).style.color = "#0e0e0e";
+                }}
+                onMouseLeave={(e) => {
+                  (e.target as HTMLAnchorElement).style.background = "transparent";
+                  (e.target as HTMLAnchorElement).style.color = "#F5C842";
+                }}
+              >
+                ACCESS_MODULE
+              </a>
+            </div>
+
+            {/* Card 4 — THE FORGE (locked, but accessible for Rohit) */}
+            <div
+              id="forge-card"
+              className="project-card group p-6 border transition-all duration-300 reveal reveal-delay-4"
+              style={{
+                background: "#2a2a2a",
+                borderColor: "rgba(245,200,66,0.4)",
+              }}
+            >
+              <div className="flex justify-between items-start mb-6">
+                <span className="material-symbols-outlined" style={{ color: "#F5C842" }}>
+                  lock
+                </span>
+                <span className="font-mono text-[9px]" style={{ color: "#6b7280" }}>
+                  ID: PRJ-999
+                </span>
+              </div>
+              <h4
+                className="text-2xl mb-3 tracking-wide"
+                style={{ fontFamily: "Bebas Neue, sans-serif", color: "#e5e2e1" }}
+              >
+                THE FORGE — Private System
+              </h4>
+              <p
+                className="text-[14px] leading-snug mb-6 overflow-hidden"
+                style={{ color: "#A0A0A0", height: "3rem" }}
+              >
+                Personal execution dashboard. Supabase + Next.js + PostgreSQL.
+              </p>
+              <div className="flex flex-wrap gap-2 mb-8">
+                {["SUPABASE", "NEXT.JS", "RLS"].map((t) => (
+                  <span
+                    key={t}
+                    className="font-mono text-[9px] px-2 py-0.5 border"
+                    style={{
+                      background: "#131313",
+                      color: "#bacac4",
+                      borderColor: "rgba(59,74,69,0.1)",
+                    }}
+                  >
+                    {t}
+                  </span>
+                ))}
+              </div>
+              {/* CLASSIFIED button — goes to /login for auth-gated access */}
+              <a
+                href="/login"
+                className="w-full py-2 flex items-center justify-center gap-2 font-mono text-[10px] uppercase tracking-widest border transition-all cursor-pointer"
+                style={{
+                  borderColor: "rgba(245,200,66,0.5)",
+                  color: "#F5C842",
+                }}
+                onMouseEnter={(e) => {
+                  const el = e.currentTarget as HTMLElement;
+                  el.style.background = "rgba(245,200,66,0.1)";
+                }}
+                onMouseLeave={(e) => {
+                  const el = e.currentTarget as HTMLElement;
+                  el.style.background = "transparent";
+                }}
+              >
+                CLASSIFIED_
+                <span className="material-symbols-outlined text-xs" style={{ fontSize: "14px" }}>
+                  lock
+                </span>
+              </a>
             </div>
           </div>
         </section>
 
-        {/* TBC */}
-        <div className={s.tbc}>
-          <span className={s.tbcL}>TO BE CONTINUED…</span>
-          <span className={s.tbcR}>NEXT CHAPTER: MORE PROJECTS // STAY TUNED</span>
+        {/* ─── CERTIFICATIONS & INTERNSHIPS ─── */}
+        <section
+          id="about"
+          className="py-20 px-6 md:px-12"
+          style={{ background: "#131313" }}
+        >
+          <div className="max-w-4xl mx-auto">
+            {/* Tab bar */}
+            <div
+              className="flex gap-8 mb-12 reveal"
+              style={{ borderBottom: "1px solid rgba(59,74,69,0.2)" }}
+            >
+              <button
+                onClick={() => setActiveTab("certs")}
+                className="pb-4 font-mono text-2xl tracking-widest transition-all"
+                style={{
+                  fontFamily: "Bebas Neue, sans-serif",
+                  borderBottom: activeTab === "certs"
+                    ? "2px solid #F5C842"
+                    : "2px solid transparent",
+                  color: activeTab === "certs"
+                    ? "#F5C842"
+                    : "rgba(186,202,196,0.5)",
+                }}
+              >
+                CERTIFICATIONS
+              </button>
+              <button
+                onClick={() => setActiveTab("internships")}
+                className="pb-4 font-mono text-2xl tracking-widest transition-all"
+                style={{
+                  fontFamily: "Bebas Neue, sans-serif",
+                  borderBottom: activeTab === "internships"
+                    ? "2px solid #F5C842"
+                    : "2px solid transparent",
+                  color: activeTab === "internships"
+                    ? "#F5C842"
+                    : "rgba(186,202,196,0.5)",
+                }}
+              >
+                INTERNSHIPS
+              </button>
+            </div>
+
+            {/* CERTIFICATIONS TAB */}
+            {activeTab === "certs" && (
+              <div className="space-y-6">
+                {[
+                  {
+                    icon: "cloud",
+                    iconColor: "#3b82f6",
+                    borderColor: "rgba(59,130,246,0.2)",
+                    bgColor: "rgba(59,130,246,0.1)",
+                    title: "GOOGLE CLOUD ARCHITECT",
+                    desc: "Professional Certification — Advanced Infrastructure & Data",
+                    provider: "GOOGLE",
+                    providerColor: "#3b82f6",
+                    valid: "2026",
+                  },
+                  {
+                    icon: "dns",
+                    iconColor: "#f97316",
+                    borderColor: "rgba(249,115,22,0.2)",
+                    bgColor: "rgba(249,115,22,0.1)",
+                    title: "AWS SECURITY SPECIALTY",
+                    desc: "Focus on encryption, identity, and incident response.",
+                    provider: "AMAZON",
+                    providerColor: "#f97316",
+                    valid: "2025",
+                  },
+                  {
+                    icon: "router",
+                    iconColor: "#14b8a6",
+                    borderColor: "rgba(20,184,166,0.2)",
+                    bgColor: "rgba(20,184,166,0.1)",
+                    title: "CISCO CCNA NETWORK",
+                    desc: "Enterprise networking routing and switching core.",
+                    provider: "CISCO",
+                    providerColor: "#14b8a6",
+                    valid: "LIFETIME",
+                  },
+                ].map((cert, i) => (
+                  <div
+                    key={cert.title}
+                    className="p-8 border flex flex-col md:flex-row gap-8 items-center reveal"
+                    style={{
+                      background: "#1c1b1b",
+                      borderColor: "rgba(59,74,69,0.1)",
+                      transitionDelay: `${i * 0.1}s`,
+                    }}
+                  >
+                    <div
+                      className="w-20 h-20 flex items-center justify-center border shrink-0"
+                      style={{ background: "#131313", borderColor: cert.borderColor }}
+                    >
+                      <span
+                        className="material-symbols-outlined text-4xl"
+                        style={{ color: cert.iconColor }}
+                      >
+                        {cert.icon}
+                      </span>
+                    </div>
+                    <div className="flex-grow text-center md:text-left">
+                      <h4
+                        className="text-2xl tracking-wide mb-1"
+                        style={{ fontFamily: "Bebas Neue, sans-serif", color: "#e5e2e1" }}
+                      >
+                        {cert.title}
+                      </h4>
+                      <p className="text-sm mb-4" style={{ color: "#A0A0A0" }}>
+                        {cert.desc}
+                      </p>
+                      <span
+                        className="px-3 py-1 font-mono text-[10px] uppercase tracking-tighter"
+                        style={{
+                          background: cert.bgColor,
+                          color: cert.providerColor,
+                        }}
+                      >
+                        PROVIDER: {cert.provider}
+                      </span>
+                    </div>
+                    <div className="text-right">
+                      <div
+                        className="font-mono text-xs mb-2"
+                        style={{ color: "#6b7280" }}
+                      >
+                        VALID_UNTIL: {cert.valid}
+                      </div>
+                      <button
+                        className="font-mono text-[10px] tracking-widest underline underline-offset-4"
+                        style={{ color: "#F5C842" }}
+                      >
+                        VERIFY_KEY
+                      </button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+
+            {/* INTERNSHIPS TAB */}
+            {activeTab === "internships" && (
+              <div className="space-y-6">
+                {INTERNSHIPS.map((intern, i) => (
+                  <div
+                    key={intern.title}
+                    className="p-8 border flex flex-col md:flex-row gap-8 items-center reveal"
+                    style={{
+                      background: intern.isWinner
+                        ? "rgba(245,200,66,0.04)"
+                        : "#1c1b1b",
+                      borderColor: intern.isWinner
+                        ? "rgba(245,200,66,0.25)"
+                        : "rgba(59,74,69,0.1)",
+                      transitionDelay: `${i * 0.08}s`,
+                    }}
+                  >
+                    <div
+                      className={`w-20 h-20 flex items-center justify-center border shrink-0`}
+                      style={{
+                        background: "#131313",
+                        borderColor: intern.isWinner
+                          ? "rgba(245,200,66,0.3)"
+                          : "rgba(59,74,69,0.2)",
+                      }}
+                    >
+                      <span
+                        className="material-symbols-outlined text-4xl"
+                        style={{ color: intern.iconColorHex }}
+                      >
+                        {intern.icon}
+                      </span>
+                    </div>
+                    <div className="flex-grow text-center md:text-left">
+                      <div className="flex items-center gap-3 mb-1 justify-center md:justify-start">
+                        <h4
+                          className="text-2xl tracking-wide"
+                          style={{ fontFamily: "Bebas Neue, sans-serif", color: "#e5e2e1" }}
+                        >
+                          {intern.title}
+                        </h4>
+                        {intern.isWinner && (
+                          <span
+                            className="px-2 py-0.5 font-mono text-[9px] uppercase tracking-wider font-bold"
+                            style={{
+                              background: "#F5C842",
+                              color: "#0e0e0e",
+                            }}
+                          >
+                            WINNER
+                          </span>
+                        )}
+                      </div>
+                      <p className="text-sm mb-4" style={{ color: "#A0A0A0" }}>
+                        {intern.desc}
+                      </p>
+                      <span
+                        className="px-3 py-1 font-mono text-[10px] uppercase tracking-tighter"
+                        style={{ background: intern.bgColorStyle, color: intern.providerColorHex }}
+                      >
+                        PROVIDER: {intern.provider}
+                      </span>
+                    </div>
+                    <div className="text-right">
+                      <div
+                        className="font-mono text-xs"
+                        style={{ color: "#6b7280" }}
+                      >
+                        {intern.year}
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        </section>
+
+        {/* ─── CONTACT ─── */}
+        <section
+          id="contact"
+          className="py-20 px-6 md:px-12"
+          style={{ background: "#0e0e0e" }}
+        >
+          <div className="max-w-4xl mx-auto">
+            <div className="mb-12 reveal">
+              <h2
+                className="leading-tight"
+                style={{
+                  fontFamily: "Bebas Neue, sans-serif",
+                  fontSize: "clamp(2.5rem, 8vw, 4rem)",
+                  color: "#e5e2e1",
+                }}
+              >
+                LET&apos;S BUILD SOMETHING
+                <span
+                  className="animate-pulse"
+                  style={{ color: "#F5C842" }}
+                >
+                  _
+                </span>
+              </h2>
+              <p
+                className="mt-4"
+                style={{ color: "#A0A0A0", fontFamily: "Space Grotesk, sans-serif" }}
+              >
+                Available for high-stakes projects and strategic full-stack consulting.
+              </p>
+            </div>
+
+            <form
+              onSubmit={handleContact}
+              className="space-y-8 p-10 border reveal"
+              style={{
+                background: "#1c1b1b",
+                borderColor: "rgba(59,74,69,0.2)",
+                boxShadow: "0 25px 50px -12px rgba(0,0,0,0.4)",
+              }}
+              suppressHydrationWarning
+            >
+              <div className="grid md:grid-cols-2 gap-8 form-row">
+                <div className="relative group">
+                  <label
+                    className="block font-mono text-[10px] uppercase mb-2 tracking-widest"
+                    style={{ color: "#F5C842" }}
+                  >
+                    Full Name
+                  </label>
+                  <input
+                    type="text"
+                    name="cf-name"
+                    id="cf-name"
+                    required
+                    placeholder="IDENTIFY_YOURSELF"
+                    className="w-full p-3 outline-none border-b transition-colors"
+                    style={{
+                      background: "#131313",
+                      borderColor: "rgba(59,74,69,0.4)",
+                      color: "#e5e2e1",
+                      fontFamily: "Space Grotesk, sans-serif",
+                      fontSize: "1rem",
+                    }}
+                    onFocus={(e) =>
+                      (e.target.style.borderColor = "#F5C842")
+                    }
+                    onBlur={(e) =>
+                      (e.target.style.borderColor = "rgba(59,74,69,0.4)")
+                    }
+                  />
+                </div>
+                <div className="relative group">
+                  <label
+                    className="block font-mono text-[10px] uppercase mb-2 tracking-widest"
+                    style={{ color: "#F5C842" }}
+                  >
+                    Email Address
+                  </label>
+                  <input
+                    type="email"
+                    name="cf-email"
+                    id="cf-email"
+                    required
+                    placeholder="COMM_CHANNEL@DOMAIN"
+                    className="w-full p-3 outline-none border-b transition-colors"
+                    style={{
+                      background: "#131313",
+                      borderColor: "rgba(59,74,69,0.4)",
+                      color: "#e5e2e1",
+                      fontFamily: "Space Grotesk, sans-serif",
+                      fontSize: "1rem",
+                    }}
+                    onFocus={(e) =>
+                      (e.target.style.borderColor = "#F5C842")
+                    }
+                    onBlur={(e) =>
+                      (e.target.style.borderColor = "rgba(59,74,69,0.4)")
+                    }
+                  />
+                </div>
+              </div>
+              <div>
+                <label
+                  className="block font-mono text-[10px] uppercase mb-2 tracking-widest"
+                  style={{ color: "#F5C842" }}
+                >
+                  Project Description
+                </label>
+                <textarea
+                  name="cf-msg"
+                  id="cf-msg"
+                  required
+                  rows={4}
+                  placeholder="DESCRIBE_THE_SYSTEM_OBJECTIVES"
+                  className="w-full p-3 outline-none border-b transition-colors resize-none"
+                  style={{
+                    background: "#131313",
+                    borderColor: "rgba(59,74,69,0.4)",
+                    color: "#e5e2e1",
+                    fontFamily: "Space Grotesk, sans-serif",
+                    fontSize: "1rem",
+                  }}
+                  onFocus={(e) =>
+                    (e.target.style.borderColor = "#F5C842")
+                  }
+                  onBlur={(e) =>
+                    (e.target.style.borderColor = "rgba(59,74,69,0.4)")
+                  }
+                />
+              </div>
+              <button
+                type="submit"
+                className="w-full py-4 flex items-center justify-center gap-4 transition-all"
+                style={{
+                  background: "#F5C842",
+                  color: "#0e0e0e",
+                  fontFamily: "Bebas Neue, sans-serif",
+                  fontSize: "1.5rem",
+                  letterSpacing: "0.2em",
+                }}
+                onMouseEnter={(e) =>
+                  ((e.target as HTMLElement).style.boxShadow =
+                    "0 0 20px #F5C842")
+                }
+                onMouseLeave={(e) =>
+                  ((e.target as HTMLElement).style.boxShadow = "none")
+                }
+              >
+                TRANSMIT_DATA
+                <span className="material-symbols-outlined">send</span>
+              </button>
+            </form>
+          </div>
+        </section>
+      </main>
+
+      {/* ─── FOOTER ─── */}
+      <footer
+        className="w-full px-6 md:px-12 py-20 border-t flex flex-col md:flex-row justify-between items-center gap-8"
+        style={{
+          background: "#0e0e0e",
+          borderColor: "rgba(59,74,69,0.1)",
+        }}
+      >
+        <div className="flex items-center gap-6">
+          <div>
+            <div className="flex items-center gap-4">
+              <span
+                className="text-2xl tracking-widest"
+                style={{ fontFamily: "Bebas Neue, sans-serif", color: "#e5e2e1" }}
+              >
+                RSP_ARCHIVE
+              </span>
+              <div className="flex gap-3">
+                <a
+                  href="https://github.com/JediScout10"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="transition-colors"
+                  style={{ color: "#6b7280" }}
+                  onMouseEnter={(e) =>
+                    ((e.currentTarget as HTMLElement).style.color = "#F5C842")
+                  }
+                  onMouseLeave={(e) =>
+                    ((e.currentTarget as HTMLElement).style.color = "#6b7280")
+                  }
+                >
+                  <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.041-1.416-4.041-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z" />
+                  </svg>
+                </a>
+                <a
+                  href="https://www.linkedin.com/in/rohit-patil-3b5579321"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="transition-colors"
+                  style={{ color: "#6b7280" }}
+                  onMouseEnter={(e) =>
+                    ((e.currentTarget as HTMLElement).style.color = "#F5C842")
+                  }
+                  onMouseLeave={(e) =>
+                    ((e.currentTarget as HTMLElement).style.color = "#6b7280")
+                  }
+                >
+                  <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z" />
+                  </svg>
+                </a>
+              </div>
+            </div>
+            <div
+              className="font-mono text-[10px] uppercase tracking-tighter mt-1"
+              style={{ color: "#6b7280" }}
+            >
+              Full Stack × Security — V4.0-STABLE
+            </div>
+          </div>
         </div>
 
-      </div>{/* /.mangaPage */}
+        <div className="flex flex-col items-end gap-2">
+          <div className="flex gap-6">
+            {["terminal", "hub", "shield"].map((icon) => (
+              <a
+                key={icon}
+                href="#"
+                className="transition-colors"
+                style={{ color: "#6b7280" }}
+                onMouseEnter={(e) =>
+                  ((e.currentTarget as HTMLElement).style.color = "#F5C842")
+                }
+                onMouseLeave={(e) =>
+                  ((e.currentTarget as HTMLElement).style.color = "#6b7280")
+                }
+              >
+                <span className="material-symbols-outlined">{icon}</span>
+              </a>
+            ))}
+          </div>
+          <span
+            className="font-mono text-[10px]"
+            style={{ color: "#4b5563" }}
+          >
+            © 2025 RSP_ARCHIVE — ALL_RIGHTS_RESERVED
+          </span>
+          {/* Subtle forge access for Rohit — small, unobtrusive */}
+          <a
+            href="/login"
+            className="font-mono text-[9px] tracking-widest opacity-20 hover:opacity-60 transition-opacity"
+            style={{ color: "#F5C842" }}
+          >
+            [ FORGE_ACCESS ]
+          </a>
+        </div>
+      </footer>
+
+      {/* ─── NPC CHARACTER GUIDE ─── */}
+      <CharacterGuide />
     </div>
-  )
+  );
 }
