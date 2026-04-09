@@ -10,7 +10,7 @@ const FLOAT_AMPLITUDE = 2;     // px
 const FLOAT_SPEED     = 0.0018; // radians per ms
 
 export default function CharacterGuide() {
-  const { currentX, currentPose, flipDirection, arrivedSection, isMoving } = useCharacterGuide();
+  const { currentPose, flipDirection, arrivedSection, isMoving } = useCharacterGuide();
 
   const containerRef  = useRef<HTMLDivElement>(null);
   const imgRef        = useRef<HTMLImageElement>(null);
@@ -64,7 +64,7 @@ export default function CharacterGuide() {
 
     rafId = requestAnimationFrame(loop);
     return () => cancelAnimationFrame(rafId);
-  }, [currentX, currentPose, flipDirection]);
+  }, [currentPose, flipDirection]);
 
   // ── Dialogue: starts only after arrivedSection fires ───────────────────────
   useEffect(() => {
