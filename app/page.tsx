@@ -61,6 +61,34 @@ export default function PortfolioPage() {
   const [activeTab, setActiveTab] = useState<"certs" | "internships">("certs");
   const revealRef = useRef<IntersectionObserver | null>(null);
 
+  const [explainFinshield, setExplainFinshield] = useState(false);
+  const [finshieldDesc, setFinshieldDesc] = useState("Machine learning fraud detection system with risk scoring, REST API backend, anomaly detection, and production-ready architecture.");
+  const [explaining, setExplaining] = useState(false);
+
+  const handleExplainFinshield = async () => {
+    if (explainFinshield) {
+      setExplainFinshield(false);
+      setFinshieldDesc("Machine learning fraud detection system with risk scoring, REST API backend, anomaly detection, and production-ready architecture.");
+      return;
+    }
+    setExplaining(true);
+    try {
+      const response = await fetch("/api/explain", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ project: "finshield" }),
+      });
+      const data = await response.json();
+      if (data.explanation) {
+        setFinshieldDesc(data.explanation);
+        setExplainFinshield(true);
+      }
+    } catch {
+    } finally {
+      setExplaining(false);
+    }
+  };
+
   /* ─── SCROLL REVEAL ─── */
   useEffect(() => {
     revealRef.current = new IntersectionObserver(
@@ -176,9 +204,8 @@ export default function PortfolioPage() {
               {/* Stat pills */}
               <div className="flex flex-wrap gap-4 mb-4">
                 {[
-                  "5+ Years Exp",
+                  "Coding Since 2023",
                   "12+ Projects",
-                  "9.2 GPA",
                 ].map((label, i) => (
                   <div
                     key={i}
@@ -403,17 +430,28 @@ rsp_core.boot()
                   FEATURED_SYSTEM
                 </div>
                 <h3
-                  className="text-5xl mb-6"
+                  className="text-5xl mb-6 relative inline-block group"
                   style={{ fontFamily: "Bebas Neue, sans-serif", color: "#e5e2e1" }}
                 >
                   FINSHIELD AI
+                  <button 
+                    onClick={handleExplainFinshield} 
+                    className="absolute -top-4 -right-16 text-[10px] tracking-widest px-2 py-0.5 border transition-colors flex items-center gap-1"
+                    style={{ 
+                      background: explainFinshield ? '#F5C842' : 'transparent',
+                      color: explainFinshield ? '#0e0e0e' : '#F5C842', 
+                      borderColor: '#F5C842',
+                      fontFamily: 'monospace'
+                    }}
+                  >
+                    {explaining ? '...' : explainFinshield ? '[HR MODE]' : '[TECH MODE]'}
+                  </button>
                 </h3>
                 <p
-                  className="text-sm leading-relaxed mb-8 max-w-md"
+                  className="text-sm leading-relaxed mb-8 max-w-md transition-all"
                   style={{ color: "#A0A0A0" }}
                 >
-                  Machine learning fraud detection system with risk scoring, REST API backend,
-                  anomaly detection, and production-ready architecture.
+                  {finshieldDesc}
                 </p>
                 <div className="flex flex-wrap gap-2 mb-8">
                   {["PYTHON", "FASTAPI", "SCIKIT-LEARN", "FEATURE ENGINEERING"].map((t) => (

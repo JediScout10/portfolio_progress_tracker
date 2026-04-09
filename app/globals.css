@@ -55,6 +55,20 @@ body {
 ::-webkit-scrollbar-track { background: #0e0e0e; }
 ::-webkit-scrollbar-thumb { background: #F5C842; }
 
+.retro-chat-scroll {
+  scrollbar-width: thin;
+  scrollbar-color: #F5C842 #131313;
+}
+.retro-chat-scroll::-webkit-scrollbar { width: 4px; }
+.retro-chat-scroll::-webkit-scrollbar-track { background: #131313; }
+.retro-chat-scroll::-webkit-scrollbar-thumb { background: rgba(245, 200, 66, 0.5); }
+.retro-chat-scroll::-webkit-scrollbar-thumb:hover { background: #F5C842; }
+
+/* Enforce Cursor Visibility Globally */
+html, body, * {
+  cursor: auto;
+}
+
 /* ─── SCANLINE ─── */
 .scanline {
   background: linear-gradient(

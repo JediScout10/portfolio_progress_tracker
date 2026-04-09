@@ -1,8 +1,8 @@
 "use client";
 
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState, FormEvent } from 'react';
 import { useCharacterGuide } from './useCharacterGuide';
-import { dialogueMap, poseImages } from './characterDialogue';
+import { poseImages } from './characterDialogue'; // No longer using dialogueMap static array
 
 // ── Idle float: 2–3px vertical sine wave ─────────────────────────────────────
 // ── Idle float: 2px vertical sine wave ─────────────────────────────────────
@@ -16,10 +16,14 @@ export default function CharacterGuide() {
   const imgRef        = useRef<HTMLImageElement>(null);
   const floatRef      = useRef(0); // current float Y offset
 
-  // Dialogue state — only updated on arrival, not per frame
-  const [displayedText, setDisplayedText] = useState('');
-  const [showBubble,    setShowBubble]    = useState(false);
-  const [bubbleLeft,    setBubbleLeft]    = useState(false); // false = bubble opens left (inwards)
+  // Dialogue state 
+  const [messages, setMessages] = useState<{ role: string; content: string }[]>([
+    { role: 'assistant', content: "Hey, I'm Rohit's AI agent. Ask me about my experience or projects." }
+  ]);
+  const [inputText, setInputText] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [showBubble, setShowBubble] = useState(false);
+  const [bubbleLeft, setBubbleLeft] = useState(false); // false = opens inward
 
   // ── RAF: sync position + idle float + pose ──────────────────────────────────
   useEffect(() => {
@@ -39,8 +43,9 @@ export default function CharacterGuide() {
       }
 
       if (imgRef.current) {
-        const pose   = currentPose.current;
-        const newSrc = poseImages[pose] || poseImages.idle;
+        let pose = currentPose.current;
+        if (loading) pose = 'think';
+        const newSrc = poseImages[pose as keyof typeof poseImages] || poseImages.idle;
         const prevPose = imgRef.current.getAttribute('data-pose');
 
         if (prevPose !== pose) {
@@ -66,38 +71,41 @@ export default function CharacterGuide() {
     return () => cancelAnimationFrame(rafId);
   }, [currentPose, flipDirection]);
 
-  // ── Dialogue: starts only after arrivedSection fires ───────────────────────
+  // ── Auto toggle based on interactions ───────────────────────
   useEffect(() => {
-    if (!arrivedSection) {
-      setShowBubble(false);
-      setDisplayedText('');
-      return;
+    // Show bubble automatically when it hits a section, strictly aesthetic on init
+    if (arrivedSection && messages.length === 1) {
+      setShowBubble(true);
     }
-
-    const fullText = dialogueMap[arrivedSection];
-    if (!fullText) return;
-
-    // Reset
-    setDisplayedText('');
-    setShowBubble(true);
-
-    // Typing effect — instant reveal, no flicker
-    let i = 0;
-    const interval = setInterval(() => {
-      i++;
-      setDisplayedText(fullText.slice(0, i));
-      if (i >= fullText.length) clearInterval(interval);
-    }, 28);
-
-    // Auto-hide after reading time (min 4s + typing time)
-    const readTime  = Math.max(4000, fullText.length * 60);
-    const hideTimer = setTimeout(() => setShowBubble(false), readTime);
-
-    return () => {
-      clearInterval(interval);
-      clearTimeout(hideTimer);
-    };
   }, [arrivedSection]);
+
+  const handleSend = async (e: FormEvent) => {
+    e.preventDefault();
+    if (!inputText.trim() || loading) return;
+
+    const userMsg = { role: "user", content: inputText };
+    setMessages((prev) => [...prev, userMsg]);
+    setInputText("");
+    setLoading(true);
+
+    try {
+    const response = await fetch("/api/chat", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ messages: [...messages, userMsg] }),
+      });
+      const data = await response.json();
+      if (data.reply) {
+        setMessages((prev) => [...prev, { role: "assistant", content: data.reply }]);
+      } else if (data.error) {
+        setMessages((prev) => [...prev, { role: "assistant", content: `ERROR: ${data.error}` }]);
+      }
+    } catch {
+      setMessages((prev) => [...prev, { role: "assistant", content: "ERROR_API_UNAVAILABLE" }]);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <div
@@ -108,12 +116,13 @@ export default function CharacterGuide() {
         right:         '24px',
         zIndex:        50,
         width:         '120px',
-        pointerEvents: 'none',
+        pointerEvents: 'auto',
         display:       'flex',
         flexDirection: 'column',
         alignItems:    'center',
         willChange:    'transform',
       }}
+      onClick={() => !showBubble && setShowBubble(true)}
     >
       {/* ── Speech Bubble ───────────────────────────────────────────────── */}
       {showBubble && (
@@ -122,36 +131,97 @@ export default function CharacterGuide() {
             position:        'absolute',
             bottom:          '100%',
             marginBottom:    '12px',
-            // Monolith palette
-            background:      '#1c1b1b',
+            background:      'rgba(14, 14, 14, 0.95)',
+            backdropFilter:  'blur(8px)',
             border:          '1px solid rgba(245,200,66,0.3)',
+            borderTop:       '3px solid #F5C842',
             color:           '#e5e2e1',
-            boxShadow:       '0 10px 30px rgba(0,0,0,0.4)',
-            borderRadius:    '6px',
-            padding:         '12px 14px',
+            boxShadow:       '0 15px 40px rgba(0,0,0,0.6), 0 0 20px rgba(245,200,66,0.05)',
+            padding:         '16px',
             fontFamily:      'monospace',
-            fontSize:        '13px',
-            lineHeight:      '1.5',
-            whiteSpace:      'pre-wrap',
-            width:           'max-content',
-            maxWidth:        '240px',
-            // Auto flip: open toward center of screen
-            left:  bubbleLeft ? '0'    : 'auto',
-            right: bubbleLeft ? 'auto' : '0',
-            // Keep inside viewport with margin
-            marginLeft: bubbleLeft ? '0' : undefined,
-            minWidth:   '160px',
+            width:           '320px',
+            borderRadius:    '12px',
+            left:            bubbleLeft ? '0' : 'auto',
+            right:           bubbleLeft ? 'auto' : '0',
+            marginLeft:      bubbleLeft ? '0' : undefined,
           }}
+          onClick={(e) => e.stopPropagation()}
         >
-          {/* Accent top bar */}
-          <div style={{
-            height:     '2px',
-            background: 'rgba(245,200,66,0.4)',
-            marginBottom: '8px',
-            borderRadius: '2px',
-          }} />
+          {/* Header */}
+          <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '14px', borderBottom: '1px solid rgba(245,200,66,0.15)', paddingBottom: '8px' }}>
+            <span style={{ color: '#F5C842', letterSpacing: '0.1em', fontSize: '11px', fontWeight: 'bold' }}>RSP_AI_INTERFACE</span>
+            <button 
+               onClick={(e) => { e.stopPropagation(); setShowBubble(false); }}
+               style={{ color: '#6b7280', background:'transparent', border: 'none', cursor: 'pointer', fontSize: '12px' }}>
+               [X]
+            </button>
+          </div>
 
-          {displayedText}
+          {/* Messages */}
+          <div className="retro-chat-scroll" style={{ maxHeight: '220px', overflowY: 'auto', marginBottom: '14px', paddingRight: '8px', display: 'flex', flexDirection: 'column', gap: '10px' }}>
+            {messages.map((m, idx) => (
+              <div key={idx} style={{ 
+                alignSelf: m.role === 'user' ? 'flex-end' : 'flex-start',
+                background: m.role === 'user' ? 'rgba(245,200,66,0.08)' : '#1c1b1b',
+                border: m.role === 'user' ? '1px solid rgba(245,200,66,0.2)' : '1px solid rgba(59,74,69,0.3)',
+                padding: '10px 14px',
+                color: m.role === 'user' ? '#F5C842' : '#bacac4',
+                maxWidth: '90%',
+                fontSize: '12px',
+                lineHeight: '1.5',
+                borderRadius: m.role === 'user' ? '12px 12px 0 12px' : '12px 12px 12px 0',
+                boxShadow: '0 4px 12px rgba(0,0,0,0.1)'
+              }}>
+                <span style={{ display: 'block', fontSize: '9px', marginBottom: '6px', opacity: 0.5, letterSpacing: '0.05em' }}>
+                  {m.role === 'user' ? 'GUEST_USER' : 'RSP_AGENT'}
+                </span>
+                {m.content}
+              </div>
+            ))}
+            {loading && <div className="animate-pulse" style={{ color: '#F5C842', fontSize: '11px', alignSelf: 'flex-start', padding: '10px', borderRadius: '12px 12px 12px 0', background: '#1c1b1b', border: '1px solid rgba(59,74,69,0.3)' }}>PROCESSING_QUERY...</div>}
+          </div>
+
+          {/* Input */}
+          <form onSubmit={handleSend} style={{ display: 'flex', boxShadow: '0 4px 12px rgba(0,0,0,0.2)', borderRadius: '6px' }}>
+            <input 
+              type="text" 
+              value={inputText}
+              onChange={(e) => setInputText(e.target.value)}
+              placeholder="ENTER_COMMAND..."
+              style={{
+                flexGrow: 1,
+                background: '#131313',
+                border: '1px solid rgba(245,200,66,0.3)',
+                borderRight: 'none',
+                color: '#e5e2e1',
+                padding: '10px 12px',
+                fontSize: '12px',
+                outline: 'none',
+                fontFamily: 'monospace',
+                borderRadius: '6px 0 0 6px',
+                transition: 'background 0.2s',
+              }}
+              onFocus={(e) => e.target.style.background = '#1c1b1b'}
+              onBlur={(e) => e.target.style.background = '#131313'}
+            />
+            <button type="submit" style={{ 
+              background: '#F5C842', 
+              color: '#0e0e0e', 
+              border: 'none', 
+              padding: '0 16px', 
+              fontFamily: 'monospace',
+              fontSize: '12px',
+              fontWeight: 'bold',
+              cursor: 'pointer',
+              borderRadius: '0 6px 6px 0',
+              transition: 'filter 0.2s'
+            }}
+            onMouseEnter={(e) => e.currentTarget.style.filter = 'brightness(1.1)'}
+            onMouseLeave={(e) => e.currentTarget.style.filter = 'none'}
+            >
+              SEND
+            </button>
+          </form>
 
           {/* Tail pointer */}
           <div style={{
