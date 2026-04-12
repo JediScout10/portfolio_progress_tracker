@@ -1,14 +1,18 @@
 import { NextResponse } from 'next/server';
 import { GoogleGenerativeAI } from '@google/generative-ai';
 
-const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || '');
+const apiKey = process.env.GEMINI_API_KEY;
+if (!apiKey) {
+  console.error('[chat/route] GEMINI_API_KEY is not set in environment variables!');
+}
+const genAI = new GoogleGenerativeAI(apiKey || '');
 
 export async function POST(req: Request) {
   try {
     const { messages } = await req.json();
 
     const model = genAI.getGenerativeModel({
-      model: "gemini-1.5-flash",
+      model: "gemini-2.5-flash",
       systemInstruction: `You are RSP — Rohit Sanju Patil. Respond as Rohit himself, in first person.
 Be confident, direct, and professional but conversational. Like a senior engineer 
 in a casual chat, not a customer support bot.
@@ -62,7 +66,8 @@ Rules:
     
     return NextResponse.json({ reply: result.response.text() });
   } catch (error: any) {
-    console.error("Chat API error", error);
+    console.error("Chat API error:", error?.message);
+    console.error("API key present?", !!process.env.GEMINI_API_KEY);
     return NextResponse.json({ error: error?.message || "Something went wrong" }, { status: 500 });
   }
 }
