@@ -345,11 +345,11 @@ rsp_core.boot()
               },
               {
                 label: "Backend_System",
-                items: ["Django", "Node.js", "PostgreSQL", "Docker", "Kubernetes", "AWS Lambda"],
+                items: ["Django", "Node.js", "PostgreSQL", "Docker", "Kubernetes", "AWS Lambda"," FastAPI"],
               },
               {
                 label: "Frontend_Interface",
-                items: ["React", "Tailwind CSS", "Next.js", "Framer Motion", "Three.js"],
+                items: ["React", "Tailwind CSS", "Next.js"],
               },
             ].map(({ label, items }, ri) => (
               <div
