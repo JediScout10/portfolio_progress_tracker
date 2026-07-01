@@ -341,7 +341,7 @@ rsp_core.boot()
             {[
               {
                 label: "Languages",
-                items: ["Python", "C/C++", "JavaScript", "SQL", "Solidity"],
+                items: ["Python", "Java", "JavaScript", "SQL", "TypeScript"],
               },
               {
                 label: "Backend_System",
